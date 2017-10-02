@@ -13,7 +13,7 @@ public class Test extends Application {
 		VBox box = new VBox();
 		
 		
-
+ 
 		stage.setScene(new Scene(box));
 		stage.show();
 	}
