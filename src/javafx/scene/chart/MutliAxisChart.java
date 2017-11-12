@@ -1,4 +1,4 @@
-package com.kostikiadis.EnchandedFXCharts;
+package javafx.scene.chart;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;

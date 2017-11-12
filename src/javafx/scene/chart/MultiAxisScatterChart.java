@@ -1,4 +1,4 @@
-package com.kostikiadis.EnchandedFXCharts;
+package javafx.scene.chart;
 
 import javafx.scene.chart.NumberAxis;
 
