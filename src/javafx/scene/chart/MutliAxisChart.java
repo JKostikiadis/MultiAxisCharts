@@ -133,11 +133,14 @@ public class MutliAxisChart extends BorderPane {
 
 		xAxis.tickLabelFontProperty().set(Font.font("Times New Roman", 18));
 		y1Axis.tickLabelFontProperty().set(Font.font("Times New Roman", 18));
-		y2Axis.tickLabelFontProperty().set(Font.font("Times New Roman", 18));
+		if (y2Axis != null)
+			y2Axis.tickLabelFontProperty().set(Font.font("Times New Roman", 18));
 
 		((Label) xAxis.lookup(".label")).setFont(Font.font("Times New Roman", 22));
 		((Label) y1Axis.lookup(".label")).setFont(Font.font("Times New Roman", 22));
-		((Label) y2Axis.lookup(".label")).setFont(Font.font("Times New Roman", 22));
+
+		if (y2Axis != null)
+			((Label) y2Axis.lookup(".label")).setFont(Font.font("Times New Roman", 22));
 
 		// we need the height cause the label is vertically oriented
 		double y1AxisTitleHeight = getLabelHeight((Label) y1Axis.lookup(".label"));
@@ -171,18 +174,22 @@ public class MutliAxisChart extends BorderPane {
 		y1AxisLine.setStroke(Color.web("#757575"));
 		y1AxisLine.endYProperty().bind(plotPane.heightProperty().subtract(yStart + bottomTitleHeight));
 
-		y2Axis.setSide(Side.RIGHT);
-		y2Axis.setAnimated(false);
-		y2Axis.relocate(40, 40);
-		y2Axis.prefHeightProperty().bind(plotPane.heightProperty().subtract(80 + bottomTitleHeight));
-		y2Axis.translateXProperty().bind(xAxisLine.endXProperty().subtract(yStart));
+		if (y2Axis != null) {
+			y2Axis.setSide(Side.RIGHT);
+			y2Axis.setAnimated(false);
+			y2Axis.relocate(40, 40);
+			y2Axis.prefHeightProperty().bind(plotPane.heightProperty().subtract(80 + bottomTitleHeight));
+			y2Axis.translateXProperty().bind(xAxisLine.endXProperty().subtract(yStart));
 
-		y2AxisLine = new Line(62, yStart, 62, 0);
-		y2AxisLine.setStroke(Color.web("#757575"));
-		y2AxisLine.translateXProperty().bind(xAxisLine.endXProperty().subtract(62));
-		y2AxisLine.endYProperty().bind(plotPane.heightProperty().subtract(yStart + bottomTitleHeight));
+			y2AxisLine = new Line(62, yStart, 62, 0);
+			y2AxisLine.setStroke(Color.web("#757575"));
+			y2AxisLine.translateXProperty().bind(xAxisLine.endXProperty().subtract(62));
+			y2AxisLine.endYProperty().bind(plotPane.heightProperty().subtract(yStart + bottomTitleHeight));
 
-		plotPane.getChildren().addAll(xAxis, xAxisLine, y1Axis, y1AxisLine, y2Axis, y2AxisLine);
+			plotPane.getChildren().addAll(y2Axis, y2AxisLine);
+		}
+
+		plotPane.getChildren().addAll(xAxis, xAxisLine, y1Axis, y1AxisLine);
 
 		/*
 		 * Vertical and horizontal Lines. Listeners in order to draw them each time one
@@ -275,8 +282,9 @@ public class MutliAxisChart extends BorderPane {
 
 	}
 
-	// TODO : Refactory the method using the getLowerBound and getUpperBound 
-	// from the yAxis and knowing the number of values there is ( getUpperBound- getLowerBound / count )
+	// TODO : Refactory the method using the getLowerBound and getUpperBound
+	// from the yAxis and knowing the number of values there is ( getUpperBound-
+	// getLowerBound / count )
 	// and find the height of each rec
 	private void updateHorizontalLines() {
 		plotPane.getChildren().removeAll(horizontalLines);
@@ -316,7 +324,11 @@ public class MutliAxisChart extends BorderPane {
 		xAxis.toFront();
 		xAxisLine.toFront();
 		y1AxisLine.toFront();
-		y2AxisLine.toFront();
+		
+		if(y2Axis != null) {
+			y2Axis.toFront();
+			y2AxisLine.toFront();
+		}
 	}
 
 	private void initLegendPane() {
