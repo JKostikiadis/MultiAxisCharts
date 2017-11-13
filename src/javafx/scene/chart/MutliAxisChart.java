@@ -275,6 +275,9 @@ public class MutliAxisChart extends BorderPane {
 
 	}
 
+	// TODO : Refactory the method using the getLowerBound and getUpperBound 
+	// from the yAxis and knowing the number of values there is ( getUpperBound- getLowerBound / count )
+	// and find the height of each rec
 	private void updateHorizontalLines() {
 		plotPane.getChildren().removeAll(horizontalLines);
 		horizontalLines.clear();
