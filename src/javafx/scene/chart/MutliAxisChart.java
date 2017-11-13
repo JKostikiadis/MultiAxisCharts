@@ -1,5 +1,7 @@
 package javafx.scene.chart;
 
+import java.text.DecimalFormat;
+
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -142,10 +144,7 @@ public class MutliAxisChart extends BorderPane {
 
 		double bottomTitleHeight = getLabelHeight((Label) xAxis.lookup(".label"));
 
-		// TODO maybe create a label and test that
-		double xAxisTickHeight = xAxis.getTickLabelFont().getSize();
-
-		Label tmpLabel = new Label("10");
+		Label tmpLabel = new Label(getAxisTickMaxLengthValue(y1Axis));
 		tmpLabel.setFont(y1Axis.getTickLabelFont());
 		double y1AxisTickWidth = getLabelWidth(tmpLabel);
 
@@ -223,6 +222,32 @@ public class MutliAxisChart extends BorderPane {
 			}
 		});
 
+	}
+
+	private String getAxisTickMaxLengthValue(NumberAxis axis) {
+
+		String upperBound;
+		String lowerBound;
+
+		double upperValue = axis.getUpperBound();
+		double lowerValue = axis.getLowerBound();
+
+		DecimalFormat realFormatter = new DecimalFormat("#,###.00");
+		DecimalFormat integerFormatter = new DecimalFormat("#,###");
+
+		if (upperValue == ((int) upperValue)) {
+			upperBound = integerFormatter.format((int) upperValue);
+		} else {
+			upperBound = realFormatter.format(upperValue);
+		}
+
+		if (lowerValue == ((int) lowerValue)) {
+			lowerBound = integerFormatter.format((int) lowerValue);
+		} else {
+			lowerBound = realFormatter.format(lowerValue);
+		}
+
+		return upperBound.length() > lowerBound.length() ? upperBound : lowerBound;
 	}
 
 	private synchronized void updateVerticalLines() {

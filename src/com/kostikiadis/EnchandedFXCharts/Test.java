@@ -19,7 +19,7 @@ public class Test extends Application {
 		NumberAxis xAxis = new NumberAxis(0, 10, 1);
 		xAxis.setLabel("Load (kg)");
 
-		NumberAxis y1Axis = new NumberAxis(0, 10, 1);
+		NumberAxis y1Axis = new NumberAxis(-100, 80, 10);
 		y1Axis.setLabel("Force (N)");
 
 		NumberAxis y2Axis = new NumberAxis(0, 10, 1);
