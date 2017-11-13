@@ -10,7 +10,6 @@ import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.chart.Axis.TickMark;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -53,6 +52,8 @@ public class MutliAxisChart extends BorderPane {
 	private Line y1AxisLine;
 	private Line y2AxisLine;
 	private Label chartTitleLabel;
+	private double xStart;
+	private int yStart;
 
 	public MutliAxisChart(NumberAxis xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
 		this.xAxis = xAxis;
@@ -101,7 +102,7 @@ public class MutliAxisChart extends BorderPane {
 		h.getChildren().add(l);
 		Scene s = new Scene(h);
 		l.impl_processCSS(true);
-		return l.prefHeight(-1) + 5;
+		return l.prefHeight(-1);
 	}
 
 	private void initPlotPane() {
@@ -127,19 +128,35 @@ public class MutliAxisChart extends BorderPane {
 		/*
 		 * X and Y1 Axis with their lines
 		 */
-		((Label) xAxis.lookup(".label")).setFont(Font.font("Times New Roman", 24));
-		((Label) y1Axis.lookup(".label")).setFont(Font.font("Times New Roman", 24));
-		((Label) y2Axis.lookup(".label")).setFont(Font.font("Times New Roman", 24));
 
-		double leftTitleWidth = getAxisLabelWidth(y1Axis);
-		double xStart = 61 + leftTitleWidth;
-		double yStart = 40;
+		xAxis.tickLabelFontProperty().set(Font.font("Times New Roman", 18));
+		y1Axis.tickLabelFontProperty().set(Font.font("Times New Roman", 18));
+		y2Axis.tickLabelFontProperty().set(Font.font("Times New Roman", 18));
+
+		((Label) xAxis.lookup(".label")).setFont(Font.font("Times New Roman", 22));
+		((Label) y1Axis.lookup(".label")).setFont(Font.font("Times New Roman", 22));
+		((Label) y2Axis.lookup(".label")).setFont(Font.font("Times New Roman", 22));
+
+		// we need the height cause the label is vertically oriented
+		double y1AxisTitleHeight = getLabelHeight((Label) y1Axis.lookup(".label"));
+
+		double bottomTitleHeight = getLabelHeight((Label) xAxis.lookup(".label"));
+
+		// TODO maybe create a label and test that
+		double xAxisTickHeight = xAxis.getTickLabelFont().getSize();
+
+		Label tmpLabel = new Label("10");
+		tmpLabel.setFont(y1Axis.getTickLabelFont());
+		double y1AxisTickWidth = getLabelWidth(tmpLabel);
+
+		xStart = 55 + y1AxisTitleHeight + y1AxisTickWidth;
+		yStart = 40;
 
 		xAxis.relocate(xStart, plotPane.getHeight());
 		xAxis.setAnimated(false);
 
 		xAxis.prefWidthProperty().bind(plotPane.widthProperty().subtract(xStart * 2));
-		xAxis.translateYProperty().bind(plotPane.heightProperty().subtract(yStart));
+		xAxis.translateYProperty().bind(plotPane.heightProperty().subtract(yStart + bottomTitleHeight));
 
 		xAxisLine = new Line(xStart, 0, 0, 0);
 		xAxisLine.setStroke(Color.web("#8B8B8B"));
@@ -149,22 +166,22 @@ public class MutliAxisChart extends BorderPane {
 		y1Axis.setSide(Side.LEFT);
 		y1Axis.setAnimated(false);
 		y1Axis.relocate(40, 40);
-		y1Axis.prefHeightProperty().bind(plotPane.heightProperty().subtract(80));
+		y1Axis.prefHeightProperty().bind(plotPane.heightProperty().subtract(80 + bottomTitleHeight));
 
 		y1AxisLine = new Line(xStart, yStart, xStart, 0);
 		y1AxisLine.setStroke(Color.web("#757575"));
-		y1AxisLine.endYProperty().bind(plotPane.heightProperty().subtract(yStart));
+		y1AxisLine.endYProperty().bind(plotPane.heightProperty().subtract(yStart + bottomTitleHeight));
 
 		y2Axis.setSide(Side.RIGHT);
 		y2Axis.setAnimated(false);
-		y2Axis.relocate(40, 40); // Maybe only set the y translation
-		y2Axis.prefHeightProperty().bind(plotPane.heightProperty().subtract(80));
+		y2Axis.relocate(40, 40);
+		y2Axis.prefHeightProperty().bind(plotPane.heightProperty().subtract(80 + bottomTitleHeight));
 		y2Axis.translateXProperty().bind(xAxisLine.endXProperty().subtract(yStart));
 
 		y2AxisLine = new Line(62, yStart, 62, 0);
 		y2AxisLine.setStroke(Color.web("#757575"));
 		y2AxisLine.translateXProperty().bind(xAxisLine.endXProperty().subtract(62));
-		y2AxisLine.endYProperty().bind(plotPane.heightProperty().subtract(yStart));
+		y2AxisLine.endYProperty().bind(plotPane.heightProperty().subtract(yStart + bottomTitleHeight));
 
 		plotPane.getChildren().addAll(xAxis, xAxisLine, y1Axis, y1AxisLine, y2Axis, y2AxisLine);
 
@@ -208,16 +225,12 @@ public class MutliAxisChart extends BorderPane {
 
 	}
 
-	private double getAxisLabelWidth(NumberAxis axis) {
-		System.out.println("h = " + this.getLabelHeight((Label) axis.lookup(".label")));
-
-		return 33;
-	}
-
 	private synchronized void updateVerticalLines() {
 
 		plotPane.getChildren().removeAll(verticalLines);
 		verticalLines.clear();
+
+		double bottomTitleHeight = getLabelHeight((Label) xAxis.lookup(".label"));
 
 		ObservableList<TickMark<Number>> xMarkList = xAxis.getTickMarks();
 
@@ -226,8 +239,9 @@ public class MutliAxisChart extends BorderPane {
 			double xPos = xMarkList.get(i).getPosition() + xAxis.getLayoutX();
 
 			Line verticalLine = new Line(xPos, 40, xPos, 0);
+			verticalLine.setStrokeWidth(1);
 			verticalLine.setStroke(Color.web("#E4E4E4"));
-			verticalLine.endYProperty().bind(plotPane.heightProperty().subtract(40));
+			verticalLine.endYProperty().bind(plotPane.heightProperty().subtract(40 + bottomTitleHeight));
 
 			verticalLines.add(verticalLine);
 		}
@@ -240,31 +254,29 @@ public class MutliAxisChart extends BorderPane {
 		plotPane.getChildren().removeAll(horizontalLines);
 		horizontalLines.clear();
 
-		ObservableList<TickMark<Number>> y1MarkList = y1Axis.getTickMarks();
+		ObservableList<TickMark<Number>> yMarkList = y1Axis.getTickMarks();
 
-		double leftTitleWidth = getAxisLabelWidth(y1Axis);
-		double xStart = 61 + leftTitleWidth;
-		double height = plotPane.heightProperty().get() / y1MarkList.size();
+		double height = yMarkList.get(0).getPosition() - yMarkList.get(1).getPosition();
 
-		for (int i = 1; i < y1MarkList.size(); i++) {
-			double yPos = y1MarkList.get(i).getPosition() + y1Axis.getLayoutY();
+		for (int i = 1; i < yMarkList.size(); i++) {
 
-			Rectangle horizontalLine = new Rectangle();
-			horizontalLine.relocate(xStart, yPos);
+			double yPos = yMarkList.get(i).getPosition() + y1Axis.getLayoutX();
 
-			horizontalLine.widthProperty().bind(plotPane.widthProperty().subtract(xStart * 2));
-			horizontalLine.setHeight(height);
+			Rectangle rec = new Rectangle();
+			rec.relocate(xStart, yPos);
 
-			horizontalLine.setStroke(Color.web("#E4E4E4"));
+			rec.setStroke(Color.web("#E4E4E4"));
 
 			if (i % 2 == 0) {
-				horizontalLine.setFill(Color.web("#F5F5F5"));
+				rec.setFill(Color.web("#F5F5F5"));
 			} else {
-				horizontalLine.setFill(Color.web("#EEEEEE"));
+				rec.setFill(Color.web("#EEEEEE"));
 			}
-			horizontalLine.toBack();
 
-			horizontalLines.add(horizontalLine);
+			rec.widthProperty().bind(xAxis.widthProperty());
+			rec.setHeight(height);
+
+			horizontalLines.add(rec);
 		}
 
 		plotPane.getChildren().addAll(horizontalLines);
