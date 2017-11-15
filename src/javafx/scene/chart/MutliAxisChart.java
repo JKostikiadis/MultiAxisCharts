@@ -26,12 +26,16 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
-public class MutliAxisChart extends BorderPane {
+public abstract class MutliAxisChart<T> extends BorderPane {
+
+	public static final int LEFT_AXIS = 0;
+	public static final int RIGHT_AXIS = 1;
 
 	/*
+	 * 
 	 * Axis Instances
 	 */
-	private NumberAxis xAxis;
+	private Axis<?> xAxis;
 	private NumberAxis y1Axis;
 	private NumberAxis y2Axis;
 
@@ -39,9 +43,6 @@ public class MutliAxisChart extends BorderPane {
 	 * Title properties
 	 */
 	protected StringProperty titleProperty = new SimpleStringProperty("Title Example");
-	protected StringProperty xAxisTitleProperty = new SimpleStringProperty("");
-	protected StringProperty y1AxisTitleProperty = new SimpleStringProperty("");
-	protected StringProperty y2AxisTitleProperty = new SimpleStringProperty("");
 
 	/*
 	 * Chart graphics parts
@@ -57,8 +58,66 @@ public class MutliAxisChart extends BorderPane {
 	private double xStart;
 	private int yStart;
 
-	public MutliAxisChart(NumberAxis xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
-		this.xAxis = xAxis;
+	public static class ChartValue<T> {
+		private T xValue;
+		private Number yValue;
+		private int yAxisSide;
+
+		public ChartValue(T xValue, Number yValue, int yAxisSide) {
+			this.xValue = xValue;
+			this.yValue = yValue;
+			this.yAxisSide = yAxisSide;
+		}
+
+		public T getXValue() {
+			return xValue;
+		}
+
+		public void setXValue(T xValue) {
+			this.xValue = xValue;
+		}
+
+		public Number getYValue() {
+			return yValue;
+		}
+
+		public void setYValue(Number yValue) {
+			this.yValue = yValue;
+		}
+
+		public int getYAxisSide() {
+			return yAxisSide;
+		}
+
+		public void setYAxisSide(int yAxisSide) {
+			this.yAxisSide = yAxisSide;
+		}
+
+	}
+
+	private ObservableList<ChartValue<T>> data = FXCollections.observableArrayList();
+
+	public MutliAxisChart(Axis<?> xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
+
+		if (xAxis instanceof CategoryAxis) {
+
+			ObservableList categories = FXCollections.observableArrayList(((CategoryAxis) xAxis).getCategories());
+
+			CategoryAxis axis = new CategoryAxis();
+			axis.setTickLabelFont(xAxis.getTickLabelFont());
+			axis.setTickLabelGap(xAxis.getTickLabelGap());
+
+			((Label) axis.lookup(".label")).setFont(((Label) xAxis.lookup(".label")).getFont());
+
+			axis.setLabel(xAxis.getLabel());
+			axis.invalidateRange(categories);
+
+			this.xAxis = axis;
+
+		} else {
+			this.xAxis = xAxis;
+		}
+
 		this.y1Axis = y1Axis;
 		this.y2Axis = y2Axis;
 
@@ -71,6 +130,8 @@ public class MutliAxisChart extends BorderPane {
 		setTitle();
 
 	}
+	
+	protected abstract void drawValues();
 
 	private void setTitle() {
 		chartTitleLabel = new Label();
@@ -128,7 +189,7 @@ public class MutliAxisChart extends BorderPane {
 		};
 
 		/*
-		 * X and Y1 Axis with their lines
+		 * T and Y1 Axis with their lines
 		 */
 
 		xAxis.tickLabelFontProperty().set(Font.font("Times New Roman", 18));
@@ -264,11 +325,11 @@ public class MutliAxisChart extends BorderPane {
 
 		double bottomTitleHeight = getLabelHeight((Label) xAxis.lookup(".label"));
 
-		ObservableList<TickMark<Number>> xMarkList = xAxis.getTickMarks();
+		ObservableList<?> xMarkList = xAxis.getTickMarks();
 
 		for (int i = 1; i < xMarkList.size(); i++) {
 
-			double xPos = xMarkList.get(i).getPosition() + xAxis.getLayoutX();
+			double xPos = ((Axis.TickMark<?>) xMarkList.get(i)).getPosition() + xAxis.getLayoutX();
 
 			Line verticalLine = new Line(xPos, 40, xPos, 0);
 			verticalLine.setStrokeWidth(1);
@@ -279,13 +340,9 @@ public class MutliAxisChart extends BorderPane {
 		}
 
 		plotPane.getChildren().addAll(verticalLines);
-
+		drawValues();
 	}
 
-	// TODO : Refactory the method using the getLowerBound and getUpperBound
-	// from the yAxis and knowing the number of values there is ( getUpperBound-
-	// getLowerBound / count )
-	// and find the height of each rec
 	private void updateHorizontalLines() {
 		plotPane.getChildren().removeAll(horizontalLines);
 		horizontalLines.clear();
@@ -324,11 +381,13 @@ public class MutliAxisChart extends BorderPane {
 		xAxis.toFront();
 		xAxisLine.toFront();
 		y1AxisLine.toFront();
-		
-		if(y2Axis != null) {
+
+		if (y2Axis != null) {
 			y2Axis.toFront();
 			y2AxisLine.toFront();
 		}
+		
+		drawValues();
 	}
 
 	private void initLegendPane() {
@@ -379,28 +438,48 @@ public class MutliAxisChart extends BorderPane {
 		return titleProperty.get();
 	}
 
-	public void setXAxisTitle(String title) {
-		xAxisTitleProperty.set(title == null ? "" : title);
+	public Axis<?> getXAxis() {
+		return xAxis;
 	}
 
-	public String getXAxisTitle() {
-		return xAxisTitleProperty.get();
+	public Axis<?> getYAxis(int axisNumber) {
+		if (axisNumber == LEFT_AXIS) {
+			return y1Axis;
+		} else {
+			return y2Axis;
+		}
 	}
 
-	public void setY1AxisTitle(String title) {
-		y1AxisTitleProperty.set(title == null ? "" : title);
+	/**
+	 * This is called whenever a series is added or removed and the legend needs to
+	 * be updated
+	 */
+	protected void updateLegend() {
+		// legend.getItems().clear();
+		// if (getData() != null) {
+		// for (int seriesIndex=0; seriesIndex < getData().size(); seriesIndex++) {
+		// Series<T,Y> series = getData().get(seriesIndex);
+		// LegendItem legenditem = new LegendItem(series.getName());
+		// legenditem.getSymbol().getStyleClass().addAll("chart-bar","series"+seriesIndex,"bar-legend-symbol",
+		// series.defaultColorStyleClass);
+		// legend.getItems().add(legenditem);
+		// }
+		// }
+		// if (legend.getItems().size() > 0) {
+		// if (getLegend() == null) {
+		// setLegend(legend);
+		// }
+		// } else {
+		// setLegend(null);
+		// }
 	}
 
-	public String getY1AxisTitle() {
-		return y1AxisTitleProperty.get();
+	public ObservableList<ChartValue<T>> getData() {
+		return data;
 	}
 
-	public void setY2AxisTitle(String title) {
-		y2AxisTitleProperty.set(title == null ? "" : title);
-	}
-
-	public String getY2AxisTitle() {
-		return y2AxisTitleProperty.get();
+	public void setData(ObservableList<ChartValue<T>> data) {
+		this.data = data;
 	}
 
 }
