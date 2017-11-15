@@ -33,15 +33,15 @@ public class Test extends Application {
 		NumberAxis y2Axis = new NumberAxis(0, 10, 1);
 		y2Axis.setLabel("Speed");
 
-		MultiAxisScatterChart<Number> chart = new MultiAxisScatterChart<Number>(850, 500, xAxis, y1Axis, y2Axis);
+		MultiAxisScatterChart<String> chart = new MultiAxisScatterChart<String>(850, 500, xAxis, y1Axis, y2Axis);
 		chart.setTitle("Force, Power/Load");
 
-		ObservableList<ChartValue<Number>> data = FXCollections.observableArrayList();
+		ObservableList<ChartValue<String>> data = FXCollections.observableArrayList();
 
-		data.add(new ChartValue<Number>(5, 60, MultiAxisScatterChart.LEFT_AXIS));
-		data.add(new ChartValue<Number>(3, 40, MultiAxisScatterChart.LEFT_AXIS));
-		data.add(new ChartValue<Number>(1, 18, MultiAxisScatterChart.LEFT_AXIS));
-		
+		data.add(new ChartValue<String>("Power", 60, MultiAxisScatterChart.LEFT_AXIS));
+		data.add(new ChartValue<String>("Mass", 40, MultiAxisScatterChart.LEFT_AXIS));
+		data.add(new ChartValue<String>("Programming", 18, MultiAxisScatterChart.LEFT_AXIS));
+
 		chart.setData(data);
 
 		primary.setScene(new Scene(chart));

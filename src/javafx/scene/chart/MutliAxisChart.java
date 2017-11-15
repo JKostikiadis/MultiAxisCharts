@@ -22,6 +22,7 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
@@ -47,7 +48,7 @@ public abstract class MutliAxisChart<T> extends BorderPane {
 	/*
 	 * Chart graphics parts
 	 */
-	private AnchorPane plotPane;
+	protected AnchorPane plotPane;
 	private TilePane legendPane = new TilePane();
 	private ObservableList<Line> verticalLines;
 	private ObservableList<Rectangle> horizontalLines;
@@ -57,6 +58,8 @@ public abstract class MutliAxisChart<T> extends BorderPane {
 	private Label chartTitleLabel;
 	private double xStart;
 	private int yStart;
+
+	protected ObservableList<Shape> chartValues = FXCollections.observableArrayList();
 
 	public static class ChartValue<T> {
 		private T xValue;
@@ -130,8 +133,11 @@ public abstract class MutliAxisChart<T> extends BorderPane {
 		setTitle();
 
 	}
-	
-	protected abstract void drawValues();
+
+	protected void drawValues() {
+		plotPane.getChildren().removeAll(chartValues);
+		chartValues.clear();
+	}
 
 	private void setTitle() {
 		chartTitleLabel = new Label();
@@ -386,7 +392,7 @@ public abstract class MutliAxisChart<T> extends BorderPane {
 			y2Axis.toFront();
 			y2AxisLine.toFront();
 		}
-		
+
 		drawValues();
 	}
 
