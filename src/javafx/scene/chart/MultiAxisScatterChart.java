@@ -1,15 +1,15 @@
 package javafx.scene.chart;
 
 import javafx.collections.ObservableList;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 
-public class MultiAxisScatterChart<T> extends MutliAxisChart<T> {
+public class MultiAxisScatterChart extends MutliAxisChart {
 
-	public MultiAxisScatterChart(Axis<?> xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
+	public MultiAxisScatterChart(CategoryAxis xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
 		super(xAxis, y1Axis, y2Axis);
 	}
 
-	public MultiAxisScatterChart(int width, int height, Axis<?> xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
+	public MultiAxisScatterChart(int width, int height, CategoryAxis xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
 		this(xAxis, y1Axis, y2Axis);
 		setPrefSize(width, height);
 		drawValues();
@@ -18,38 +18,47 @@ public class MultiAxisScatterChart<T> extends MutliAxisChart<T> {
 	@Override
 	public void drawValues() {
 		super.drawValues();
-		ObservableList<ChartValue<T>> data = getData();
 
+		ObservableList<XYChart.Series> data = getData();
+
+		CategoryAxis xAxis = (CategoryAxis) getXAxis();
 		NumberAxis y1Axis = (NumberAxis) getYAxis(MutliAxisChart.LEFT_AXIS);
 		NumberAxis y2Axis = (NumberAxis) getYAxis(MutliAxisChart.RIGHT_AXIS);
 
-		if (getXAxis() instanceof CategoryAxis) {
+		for (XYChart.Series serie : data) {
+			ObservableList<XYChart.Data> dataSeries = serie.getData();
 
-			CategoryAxis xAxis = (CategoryAxis) getXAxis();
-
-			for (ChartValue<T> value : data) {
+			for (XYChart.Data value : dataSeries) {
 				String xValue = (String) value.getXValue();
-				Number yValue = value.getYValue();
+				Number yValue = (Number) value.getYValue();
 
 				double xPosition = xAxis.getDisplayPosition(xValue) + xAxis.getLayoutX();
 				double yPosition;
 
-				if (value.getYAxisSide() == MutliAxisChart.LEFT_AXIS) {
+				if (((int) value.getExtraValue()) == MutliAxisChart.LEFT_AXIS) {
 					yPosition = y1Axis.getDisplayPosition(yValue) + y1Axis.getLayoutY();
 				} else {
 					yPosition = y2Axis.getDisplayPosition(yValue) + y2Axis.getLayoutY();
 				}
 
-				Circle c = new Circle(5);
-				c.setCenterX(xPosition);
-				c.setCenterY(yPosition);
+				Rectangle valuePane = new Rectangle();
+				valuePane.setWidth(10);
+				valuePane.setHeight(y1Axis.getLayoutX() + y1Axis.getHeight() - yPosition + 2);
 
-				chartValues.add(c);
+				valuePane.setLayoutX(xPosition - valuePane.getWidth() / 2);
+				valuePane.setLayoutY(yPosition);
+				valuePane.setStyle(getSeriesStyle(0));
+				valuePane.toFront();
+
+				chartValues.add(valuePane);
 			}
-		} else {
-
 		}
+
 		plotPane.getChildren().addAll(chartValues);
+	}
+
+	private String getSeriesStyle(int i) {
+		return "-fx-background-color: CHART_COLOR_1;";
 	}
 
 }

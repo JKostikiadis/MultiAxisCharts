@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.Axis.TickMark;
 import javafx.scene.control.Label;
@@ -27,7 +28,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
-public abstract class MutliAxisChart<T> extends BorderPane {
+public abstract class MutliAxisChart extends BorderPane {
 
 	public static final int LEFT_AXIS = 0;
 	public static final int RIGHT_AXIS = 1;
@@ -59,46 +60,9 @@ public abstract class MutliAxisChart<T> extends BorderPane {
 	private double xStart;
 	private int yStart;
 
-	protected ObservableList<Shape> chartValues = FXCollections.observableArrayList();
+	protected ObservableList<Node> chartValues = FXCollections.observableArrayList();
 
-	public static class ChartValue<T> {
-		private T xValue;
-		private Number yValue;
-		private int yAxisSide;
-
-		public ChartValue(T xValue, Number yValue, int yAxisSide) {
-			this.xValue = xValue;
-			this.yValue = yValue;
-			this.yAxisSide = yAxisSide;
-		}
-
-		public T getXValue() {
-			return xValue;
-		}
-
-		public void setXValue(T xValue) {
-			this.xValue = xValue;
-		}
-
-		public Number getYValue() {
-			return yValue;
-		}
-
-		public void setYValue(Number yValue) {
-			this.yValue = yValue;
-		}
-
-		public int getYAxisSide() {
-			return yAxisSide;
-		}
-
-		public void setYAxisSide(int yAxisSide) {
-			this.yAxisSide = yAxisSide;
-		}
-
-	}
-
-	private ObservableList<ChartValue<T>> data = FXCollections.observableArrayList();
+	private ObservableList<XYChart.Series> data = FXCollections.observableArrayList();
 
 	public MutliAxisChart(Axis<?> xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
 
@@ -480,11 +444,11 @@ public abstract class MutliAxisChart<T> extends BorderPane {
 		// }
 	}
 
-	public ObservableList<ChartValue<T>> getData() {
+	public ObservableList<XYChart.Series> getData() {
 		return data;
 	}
 
-	public void setData(ObservableList<ChartValue<T>> data) {
+	public void setData(ObservableList<XYChart.Series> data) {
 		this.data = data;
 	}
 
