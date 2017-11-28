@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -13,6 +14,7 @@ import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.Axis.TickMark;
+import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -23,7 +25,6 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
@@ -50,7 +51,7 @@ public abstract class MutliAxisChart extends BorderPane {
 	 * Chart graphics parts
 	 */
 	protected AnchorPane plotPane;
-	private TilePane legendPane = new TilePane();
+	private TilePane legendPane;
 	private ObservableList<Line> verticalLines;
 	private ObservableList<Rectangle> horizontalLines;
 	private Line xAxisLine;
@@ -64,18 +65,25 @@ public abstract class MutliAxisChart extends BorderPane {
 
 	private ObservableList<XYChart.Series> data = FXCollections.observableArrayList();
 
+	protected final String DEFAULT_COLORS[] = { "#f3622d", "#fba71b", "#57b757", "#41a9c9", "#4258c9", "#9a42c8", "#c84164",
+			"#888888" };
+
 	public MutliAxisChart(Axis<?> xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
 
 		if (xAxis instanceof CategoryAxis) {
 
-			ObservableList categories = FXCollections.observableArrayList(((CategoryAxis) xAxis).getCategories());
+			ObservableList<String> categories = FXCollections.observableArrayList(((CategoryAxis) xAxis).getCategories());
 
 			CategoryAxis axis = new CategoryAxis();
+			axis.tickLengthProperty().set(10);
 			axis.setTickLabelFont(xAxis.getTickLabelFont());
 			axis.setTickLabelGap(xAxis.getTickLabelGap());
 
 			((Label) axis.lookup(".label")).setFont(((Label) xAxis.lookup(".label")).getFont());
 
+			axis.tickLabelRotationProperty().addListener(e -> {
+				axis.setTickLabelRotation(0);
+			});
 			axis.setLabel(xAxis.getLabel());
 			axis.invalidateRange(categories);
 
@@ -89,8 +97,6 @@ public abstract class MutliAxisChart extends BorderPane {
 		this.y2Axis = y2Axis;
 
 		setStyle("-fx-background-color : #FFFFFF;");
-		legendPane.setAlignment(Pos.CENTER);
-		legendPane.setPrefColumns(6);
 
 		initLegendPane();
 		initPlotPane();
@@ -297,7 +303,7 @@ public abstract class MutliAxisChart extends BorderPane {
 
 		ObservableList<?> xMarkList = xAxis.getTickMarks();
 
-		for (int i = 1; i < xMarkList.size(); i++) {
+		for (int i = 0; i < xMarkList.size(); i++) {
 
 			double xPos = ((Axis.TickMark<?>) xMarkList.get(i)).getPosition() + xAxis.getLayoutX();
 
@@ -318,6 +324,10 @@ public abstract class MutliAxisChart extends BorderPane {
 		horizontalLines.clear();
 
 		ObservableList<TickMark<Number>> yMarkList = y1Axis.getTickMarks();
+
+		if (yMarkList.size() < 2) {
+			return;
+		}
 
 		double height = yMarkList.get(0).getPosition() - yMarkList.get(1).getPosition();
 
@@ -362,40 +372,57 @@ public abstract class MutliAxisChart extends BorderPane {
 
 	private void initLegendPane() {
 
+		legendPane = new TilePane();
+		legendPane.setAlignment(Pos.CENTER);
+		legendPane.setPadding(new Insets(5, 2, 5, 2));
+		legendPane.setPrefWidth(5);
+		legendPane.setVgap(5);
+		legendPane.setHgap(10);
+		legendPane.setStyle(
+				"-fx-background-color : #EEEEEE; -fx-background-radius : 5; -fx-border-radius :5 ;  -fx-border-color: #CCCCCC");
+
 		FlowPane legendPosPane = new FlowPane();
 		legendPosPane.setPadding(new Insets(5));
 		legendPosPane.setAlignment(Pos.CENTER);
 
 		legendPosPane.getChildren().add(legendPane);
 
-		legendPane.setPadding(new Insets(10));
+		// TilePane.setMargin(legendPane, new Insets(20));
 
-		legendPane.setVgap(5);
-		legendPane.setHgap(10);
+		data.addListener(new ListChangeListener<Series>() {
 
-		legendPane.setStyle("-fx-background-color : #EEEEEE; -fx-background-radius : 10;");
+			@Override
+			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Series> change) {
+				while (change.next()) {
+					updateLegend();
+				}
+			}
+		});
 
-		TilePane.setMargin(legendPane, new Insets(20));
-
-		String DEFAULT_COLORS[] = { "#f3622d", "#fba71b", "#57b757", "#41a9c9", "#4258c9", "#9a42c8", "#c84164",
-				"#888888" };
-		for (int i = 0; i < DEFAULT_COLORS.length * 2; i++) {
-			Label label = new Label("legend " + i);
-
-			Region n = new Region();
-			n.setStyle("-fx-min-width: 10.0;\r\n" + "    -fx-max-width: 10.0;\r\n" + "    -fx-min-height: 10.0;\r\n"
-					+ "    -fx-max-height: 10.0;\r\n" + "  \r\n" + "    -fx-background-color : "
-					+ DEFAULT_COLORS[i % DEFAULT_COLORS.length] + ";\r\n" + "    -fx-background-insets: 0.0, 2.0;\r\n"
-					+ "    -fx-background-radius: 5.0px;\r\n" + "    -fx-padding: 5.0px;");
-
-			label.setGraphic(n);
-			legendPane.getChildren().add(label);
-		}
-
-		if (legendPane.getChildren().isEmpty()) {
-			legendPosPane.setVisible(false);
-		}
 		setBottom(legendPosPane);
+	}
+
+	protected void addLegend(String legendLabel) {
+
+		int index = 0;
+		for (XYChart.Series serie : data) {
+			if (legendLabel.equalsIgnoreCase(serie.getName())) {
+				break;
+			}
+			index++;
+		}
+
+		Label label = new Label(legendLabel);
+		label.setPadding(new Insets(0, 10, 0, 10));
+
+		Region n = new Region();
+		n.setPrefSize(14, 14);
+		n.setStyle("-fx-background-color : " + DEFAULT_COLORS[index % DEFAULT_COLORS.length] + ";"
+				+ "-fx-background-insets: 0.0, 2.0;" + "-fx-background-radius: 10.0px;" + "-fx-padding: 5.0px;");
+
+		label.setGraphic(n);
+		legendPane.getChildren().add(label);
+
 	}
 
 	public void setTitle(String title) {
@@ -425,23 +452,16 @@ public abstract class MutliAxisChart extends BorderPane {
 	 * be updated
 	 */
 	protected void updateLegend() {
-		// legend.getItems().clear();
-		// if (getData() != null) {
-		// for (int seriesIndex=0; seriesIndex < getData().size(); seriesIndex++) {
-		// Series<T,Y> series = getData().get(seriesIndex);
-		// LegendItem legenditem = new LegendItem(series.getName());
-		// legenditem.getSymbol().getStyleClass().addAll("chart-bar","series"+seriesIndex,"bar-legend-symbol",
-		// series.defaultColorStyleClass);
-		// legend.getItems().add(legenditem);
-		// }
-		// }
-		// if (legend.getItems().size() > 0) {
-		// if (getLegend() == null) {
-		// setLegend(legend);
-		// }
-		// } else {
-		// setLegend(null);
-		// }
+		legendPane.getChildren().clear();
+		if (getData() != null) {
+			for (int seriesIndex = 0; seriesIndex < getData().size(); seriesIndex++) {
+				Series series = getData().get(seriesIndex);
+				addLegend(series.getName());
+			}
+		}
+		legendPane.requestLayout();
+		legendPane.setVisible(!getData().isEmpty());
+
 	}
 
 	public ObservableList<XYChart.Series> getData() {

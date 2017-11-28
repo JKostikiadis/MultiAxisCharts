@@ -2,15 +2,15 @@ package javafx.scene.chart;
 
 import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 
-public class MultiAxisScatterChart extends MutliAxisChart {
+public class MultiAxisBarChart extends MutliAxisChart {
 
-	public MultiAxisScatterChart(CategoryAxis xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
+	public MultiAxisBarChart(CategoryAxis xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
 		super(xAxis, y1Axis, y2Axis);
 	}
 
-	public MultiAxisScatterChart(int width, int height, CategoryAxis xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
+	public MultiAxisBarChart(int width, int height, CategoryAxis xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
 		this(xAxis, y1Axis, y2Axis);
 		setPrefSize(width, height);
 		drawValues();
@@ -42,11 +42,15 @@ public class MultiAxisScatterChart extends MutliAxisChart {
 					yPosition = y2Axis.getDisplayPosition(yValue) + y2Axis.getLayoutY();
 				}
 
-				Circle valueShape = new Circle(5);
+				Rectangle valueShape = new Rectangle();
 				valueShape.setFill(Color.web(DEFAULT_COLORS[seriesIndex % DEFAULT_COLORS.length]));
+				valueShape.setWidth(10);
+				valueShape.setHeight(y1Axis.getLayoutX() + y1Axis.getHeight() - yPosition + 2);
+				valueShape.setArcWidth(1);
+				valueShape.setArcHeight(1.0);
 
-				valueShape.setCenterX(xPosition);
-				valueShape.setCenterY(yPosition);
+				valueShape.setLayoutX(xPosition - valueShape.getWidth() / 2);
+				valueShape.setLayoutY(yPosition);
 				valueShape.toFront();
 
 				chartValues.add(valueShape);

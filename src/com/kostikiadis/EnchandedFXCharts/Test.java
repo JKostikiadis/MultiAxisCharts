@@ -22,7 +22,7 @@ public class Test extends Application {
 
 		CategoryAxis xAxis = new CategoryAxis();
 		xAxis.setCategories(FXCollections.<String>observableArrayList(
-				Arrays.asList(new String[] { "Power", "Force", "Mass", "Gravity", "Programming" })));
+				Arrays.asList(new String[] { "Power", "Force", "Mass Programming", "Gravity", "Programming" })));
 
 		xAxis.setLabel("Load (kg)");
 
