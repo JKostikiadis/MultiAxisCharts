@@ -1,20 +1,24 @@
 package javafx.scene.chart;
 
+import java.util.ArrayList;
+
 import javafx.collections.ObservableList;
+import javafx.scene.effect.Light.Point;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 
-public class MultiAxisLineChart extends MultiAxisChart {
+public class MultiAxisAreaChart extends MultiAxisChart {
 
-	public MultiAxisLineChart(Axis<?> xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
+	public MultiAxisAreaChart(Axis<?> xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
 		super(xAxis, y1Axis, y2Axis);
 	}
 
-	public MultiAxisLineChart(int width, int height, Axis<?> xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
+	public MultiAxisAreaChart(int width, int height, Axis<?> xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
 		this(xAxis, y1Axis, y2Axis);
 		setPrefSize(width, height);
 		drawValues();
@@ -29,6 +33,8 @@ public class MultiAxisLineChart extends MultiAxisChart {
 		NumberAxis y2Axis = (NumberAxis) getYAxis(MultiAxisChart.RIGHT_AXIS);
 
 		int seriesIndex = 0;
+		double xPosition = 0, yPosition;
+		
 		for (XYChart.Series serie : data) {
 			ObservableList<XYChart.Data> dataSeries = serie.getData();
 
@@ -37,13 +43,19 @@ public class MultiAxisLineChart extends MultiAxisChart {
 			linePath.setStrokeWidth(2);
 			
 			chartValues.add(linePath);
+			
+			Polygon area = new Polygon(); 
+			area.setFill(Color.web(DEFAULT_COLORS[seriesIndex % DEFAULT_COLORS.length]+"33"));
+
+			ArrayList<Point> allPoints = new ArrayList<>();
+			chartValues.add(area);
 
 			for (XYChart.Data value : dataSeries) {
 				String xValue = value.getXValue().toString();
 				Number yValue = (Number) value.getYValue();
 
-				double xPosition, yPosition;
-				;
+				
+				Color color = Color.web(DEFAULT_COLORS[seriesIndex % DEFAULT_COLORS.length]);;
 
 				if (getXAxis() instanceof CategoryAxis) {
 					xPosition = ((CategoryAxis) getXAxis()).getDisplayPosition(xValue)
@@ -58,23 +70,43 @@ public class MultiAxisLineChart extends MultiAxisChart {
 				} else {
 					yPosition = y2Axis.getDisplayPosition(yValue) + y2Axis.getLayoutY();
 				}
-
-				if (linePath.getElements().isEmpty()) {
+						
+				if(allPoints.isEmpty()) {
+					double x = getXAxis().getLayoutX() + getXAxis().getTranslateX();
+					double y = getXAxis().getLayoutY() + getXAxis().getTranslateY();
+					
 					linePath.getElements().add(new MoveTo(xPosition, yPosition));
-				} else {
+						
+					allPoints.add(new Point(xPosition, y, 0, color));
+				}else {
 					linePath.getElements().add(new LineTo(xPosition, yPosition));
 				}
 
+				allPoints.add(new Point(xPosition, yPosition,0, color));
+
 				Circle whole = new Circle(xPosition, yPosition, 5);
-				whole.setFill(Color.web(DEFAULT_COLORS[seriesIndex % DEFAULT_COLORS.length]));
+				whole.setFill(color);
 				Circle inside = new Circle(xPosition, yPosition, 2);
 				inside.setFill(Color.WHITE);
 
-				Shape donutShape = Shape.subtract(whole, inside);
-				donutShape.setFill(Color.web(DEFAULT_COLORS[seriesIndex % DEFAULT_COLORS.length]));
-
 				chartValues.addAll(whole, inside);
 			}
+			
+			Double polygonPoints [] = new Double[allPoints.size()*2+2];
+			int index = 0;
+			for(int i = 0 ; i < allPoints.size() ; i++) {
+				polygonPoints[index++] = allPoints.get(i).getX();
+				polygonPoints[index++] = allPoints.get(i).getY();		
+			}
+			
+			// Add the the right down corner of the area
+			double x = xPosition;
+			double y = getXAxis().getLayoutY() + getXAxis().getTranslateY();
+			
+			polygonPoints[index++] = x;
+			polygonPoints[index++] = y;	
+			
+			area.getPoints().addAll(polygonPoints);
 
 			seriesIndex++;
 		}

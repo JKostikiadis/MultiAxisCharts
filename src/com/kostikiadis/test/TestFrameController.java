@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.MultiAxisAreaChart;
 import javafx.scene.chart.MultiAxisBarChart;
 import javafx.scene.chart.MultiAxisChart;
 import javafx.scene.chart.MultiAxisLineChart;
@@ -78,14 +79,12 @@ public class TestFrameController {
 		xAxisTypeComboBox.getSelectionModel().select(0);
 		chartTypeComboBox.getSelectionModel().select(0);
 		updateChart();
-
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void updateChart() {
 
 		MultiAxisChart chart = null;
-
 		Axis<?> xAxis = null;
 		NumberAxis y1Axis = null;
 		NumberAxis y2Axis = null;
@@ -124,20 +123,19 @@ public class TestFrameController {
 		xAxis.setLabel("Load (kg)");
 
 		if (chartType == SCATTER_CHART) {
-			chart = new MultiAxisScatterChart(850, 500, xAxis, y1Axis, y2Axis);
+			chart = new MultiAxisScatterChart(400, 400, xAxis, y1Axis, y2Axis);
 		} else if (chartType == BAR_CHART) {
-			chart = new MultiAxisBarChart(850, 500, xAxis, y1Axis, y2Axis);
+			chart = new MultiAxisBarChart(400, 400, xAxis, y1Axis, y2Axis);
 		} else if (chartType == LINE_CHART) {
-			chart = new MultiAxisLineChart(850, 500, xAxis, y1Axis, y2Axis);
+			chart = new MultiAxisLineChart(400, 400, xAxis, y1Axis, y2Axis);
+		} else {
+			chart = new MultiAxisAreaChart(400, 400, xAxis, y1Axis, y2Axis);
 		}
-		
-		if (chart == null)
-			return;
-		
+
 		chart.setTitle("Force, Power/Load");
 		chart.setBackgroundGrid(hasBackgroundGrid);
 		chart.getData().add(series1);
-		
+
 		chartPane.getChildren().clear();
 		chartPane.setCenter(chart);
 	}
