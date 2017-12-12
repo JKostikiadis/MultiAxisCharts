@@ -65,14 +65,15 @@ public abstract class MutliAxisChart extends BorderPane {
 
 	private ObservableList<XYChart.Series> data = FXCollections.observableArrayList();
 
-	protected final String DEFAULT_COLORS[] = { "#f3622d", "#fba71b", "#57b757", "#41a9c9", "#4258c9", "#9a42c8", "#c84164",
-			"#888888" };
+	protected final String DEFAULT_COLORS[] = { "#f3622d", "#fba71b", "#57b757", "#41a9c9", "#4258c9", "#9a42c8",
+			"#c84164", "#888888" };
 
 	public MutliAxisChart(Axis<?> xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
 
 		if (xAxis instanceof CategoryAxis) {
 
-			ObservableList<String> categories = FXCollections.observableArrayList(((CategoryAxis) xAxis).getCategories());
+			ObservableList<String> categories = FXCollections
+					.observableArrayList(((CategoryAxis) xAxis).getCategories());
 
 			CategoryAxis axis = new CategoryAxis();
 			axis.tickLengthProperty().set(10);
@@ -228,6 +229,24 @@ public abstract class MutliAxisChart extends BorderPane {
 
 		plotPane.getChildren().addAll(xAxis, xAxisLine, y1Axis, y1AxisLine);
 
+		verticalLines = FXCollections.observableArrayList();
+		horizontalLines = FXCollections.observableArrayList();
+
+		initBackgroundGrid();
+
+		setCenter(plotPane);
+
+		// Platform.runLater(new Runnable() {
+		// @Override
+		// public void run() {
+		// updateVerticalLines();
+		// updateHorizontalLines();
+		// }
+		// });
+
+	}
+
+	private void initBackgroundGrid() {
 		/*
 		 * Vertical and horizontal Lines. Listeners in order to draw them each time one
 		 * of the Axis resize
@@ -235,7 +254,24 @@ public abstract class MutliAxisChart extends BorderPane {
 
 		// TODO : set to listen axis value change as well
 
+		
+		y1Axis.layoutBoundsProperty().addListener(e -> {
+			plotPane.getChildren().removeAll(horizontalLines);
+			horizontalLines.clear();
+			
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					updateHorizontalLines();
+				}
+			});
+			
+		});
+		
 		xAxis.layoutBoundsProperty().addListener(e -> {
+			plotPane.getChildren().removeAll(verticalLines);
+			verticalLines.clear();
+			
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
@@ -244,27 +280,7 @@ public abstract class MutliAxisChart extends BorderPane {
 			});
 		});
 
-		y1Axis.layoutBoundsProperty().addListener(e -> {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					updateHorizontalLines();
-				}
-			});
-		});
-
-		verticalLines = FXCollections.observableArrayList();
-		horizontalLines = FXCollections.observableArrayList();
-
-		setCenter(plotPane);
-
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				updateVerticalLines();
-				updateHorizontalLines();
-			}
-		});
+		
 
 	}
 
@@ -296,8 +312,7 @@ public abstract class MutliAxisChart extends BorderPane {
 
 	private synchronized void updateVerticalLines() {
 
-		plotPane.getChildren().removeAll(verticalLines);
-		verticalLines.clear();
+		
 
 		double bottomTitleHeight = getLabelHeight((Label) xAxis.lookup(".label"));
 
@@ -315,13 +330,23 @@ public abstract class MutliAxisChart extends BorderPane {
 			verticalLines.add(verticalLine);
 		}
 
-		plotPane.getChildren().addAll(verticalLines);
+		for(Line l : verticalLines) {
+			if(!verticalLines.contains(l)) {
+				plotPane.getChildren().add(l);
+			}else {
+				plotPane.getChildren().remove(l);
+				plotPane.getChildren().add(l);
+			}
+		}
+		
+		
+		
+		
 		drawValues();
 	}
 
 	private void updateHorizontalLines() {
-		plotPane.getChildren().removeAll(horizontalLines);
-		horizontalLines.clear();
+		
 
 		ObservableList<TickMark<Number>> yMarkList = y1Axis.getTickMarks();
 
@@ -352,11 +377,15 @@ public abstract class MutliAxisChart extends BorderPane {
 			horizontalLines.add(rec);
 		}
 
-		plotPane.getChildren().addAll(horizontalLines);
-
-		for (Line l : verticalLines) {
-			l.toFront();
+		for(Rectangle rec : horizontalLines) {
+			if(!horizontalLines.contains(rec)) {
+				plotPane.getChildren().add(rec);
+			}else {
+				plotPane.getChildren().remove(rec);
+				plotPane.getChildren().add(rec);
+			}
 		}
+		
 		y1Axis.toFront();
 		xAxis.toFront();
 		xAxisLine.toFront();
@@ -366,7 +395,11 @@ public abstract class MutliAxisChart extends BorderPane {
 			y2Axis.toFront();
 			y2AxisLine.toFront();
 		}
-
+		
+		for (Line l : verticalLines) {
+			l.toFront();
+		}
+		
 		drawValues();
 	}
 
