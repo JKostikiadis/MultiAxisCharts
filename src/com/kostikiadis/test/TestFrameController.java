@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.MultiAxisBarChart;
 import javafx.scene.chart.MultiAxisChart;
 import javafx.scene.chart.MultiAxisScatterChart;
 import javafx.scene.chart.NumberAxis;
@@ -67,8 +68,8 @@ public class TestFrameController {
 			hasSecondAxis = secondAxisCheckBox.isSelected();
 			updateChart();
 		});
-		
-		backgroundGridCheckBox.setOnAction(e->{
+
+		backgroundGridCheckBox.setOnAction(e -> {
 			hasBackgroundGrid = backgroundGridCheckBox.isSelected();
 			updateChart();
 		});
@@ -121,16 +122,21 @@ public class TestFrameController {
 		}
 		xAxis.setLabel("Load (kg)");
 
+		System.out.println(BAR_CHART + " " + chartType);
 		if (chartType == SCATTER_CHART) {
 			chart = new MultiAxisScatterChart(850, 500, xAxis, y1Axis, y2Axis);
-			chart.setTitle("Force, Power/Load");
+		} else if (chartType == BAR_CHART) {
+			chart = new MultiAxisBarChart(850, 500, xAxis, y1Axis, y2Axis);
 		}
 
 		if (chart == null)
 			return;
-
+		
+		chart.setTitle("Force, Power/Load");
 		chart.setBackgroundGrid(hasBackgroundGrid);
 		chart.getData().add(series1);
+		
+		chartPane.getChildren().clear();
 		chartPane.setCenter(chart);
 	}
 }

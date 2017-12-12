@@ -263,6 +263,7 @@ public abstract class MultiAxisChart extends BorderPane {
 				@Override
 				public void run() {
 					updateHorizontalLines();
+					drawValues();
 				}
 			});
 
@@ -276,6 +277,7 @@ public abstract class MultiAxisChart extends BorderPane {
 				@Override
 				public void run() {
 					updateVerticalLines();
+					drawValues();
 				}
 			});
 		});
@@ -338,7 +340,6 @@ public abstract class MultiAxisChart extends BorderPane {
 			}
 		}
 
-		drawValues();
 	}
 
 	private void updateHorizontalLines() {
@@ -397,7 +398,6 @@ public abstract class MultiAxisChart extends BorderPane {
 			l.toFront();
 		}
 
-		drawValues();
 	}
 
 	private void initLegendPane() {
