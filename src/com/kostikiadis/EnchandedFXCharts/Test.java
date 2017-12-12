@@ -20,10 +20,11 @@ public class Test extends Application {
 	@Override
 	public void start(Stage primary) throws Exception {
 
-		CategoryAxis xAxis = new CategoryAxis();
-		xAxis.setCategories(FXCollections.<String>observableArrayList(
-				Arrays.asList(new String[] { "Power", "Force", "Mass Programming", "Gravity", "Programming" })));
+//		CategoryAxis xAxis = new CategoryAxis();
+//		xAxis.setCategories(FXCollections.<String>observableArrayList(
+//				Arrays.asList(new String[] { "Power", "Force", "Mass Programming", "Gravity", "Programming" })));
 
+		NumberAxis xAxis = new NumberAxis(-100, 80, 10);
 		xAxis.setLabel("Load (kg)");
 
 		NumberAxis y1Axis = new NumberAxis(-100, 80, 10);
@@ -38,9 +39,9 @@ public class Test extends Application {
 		XYChart.Series series1 = new XYChart.Series();
 		series1.setName("2003");
 
-		series1.getData().add(new XYChart.Data("Power", -50, MultiAxisScatterChart.LEFT_AXIS));
-		series1.getData().add(new XYChart.Data("Mass", 60, MultiAxisScatterChart.LEFT_AXIS));
-		series1.getData().add(new XYChart.Data("Programming", 0, MultiAxisScatterChart.LEFT_AXIS));
+		series1.getData().add(new XYChart.Data(10, -50, MultiAxisScatterChart.LEFT_AXIS));
+		series1.getData().add(new XYChart.Data(20, 60, MultiAxisScatterChart.LEFT_AXIS));
+		series1.getData().add(new XYChart.Data(30, 0, MultiAxisScatterChart.LEFT_AXIS));
 
 		chart.getData().add(series1);
 

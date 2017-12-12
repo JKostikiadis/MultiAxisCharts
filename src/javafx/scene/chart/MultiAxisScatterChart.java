@@ -16,12 +16,17 @@ public class MultiAxisScatterChart extends MutliAxisChart {
 		drawValues();
 	}
 
+	public MultiAxisScatterChart(int width, int height, NumberAxis xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
+		super(xAxis, y1Axis, y2Axis);
+		setPrefSize(width, height);
+		drawValues();
+	}
+
 	@Override
 	public void drawValues() {
 		super.drawValues();
 		ObservableList<XYChart.Series> data = getData();
 
-		CategoryAxis xAxis = (CategoryAxis) getXAxis();
 		NumberAxis y1Axis = (NumberAxis) getYAxis(MutliAxisChart.LEFT_AXIS);
 		NumberAxis y2Axis = (NumberAxis) getYAxis(MutliAxisChart.RIGHT_AXIS);
 
@@ -30,10 +35,19 @@ public class MultiAxisScatterChart extends MutliAxisChart {
 			ObservableList<XYChart.Data> dataSeries = serie.getData();
 
 			for (XYChart.Data value : dataSeries) {
-				String xValue = (String) value.getXValue();
+				String xValue = value.getXValue().toString();
 				Number yValue = (Number) value.getYValue();
 
-				double xPosition = xAxis.getDisplayPosition(xValue) + xAxis.getLayoutX();
+				double xPosition;
+				
+				if (getXAxis() instanceof CategoryAxis) {
+					xPosition = ((CategoryAxis) getXAxis()).getDisplayPosition(xValue)
+							+ ((CategoryAxis) getXAxis()).getLayoutX();
+				} else {
+					xPosition = ((NumberAxis) getXAxis()).getDisplayPosition(Double.parseDouble(xValue))
+							+ ((NumberAxis) getXAxis()).getLayoutX();
+				}
+
 				double yPosition;
 
 				if (((int) value.getExtraValue()) == MutliAxisChart.LEFT_AXIS) {
