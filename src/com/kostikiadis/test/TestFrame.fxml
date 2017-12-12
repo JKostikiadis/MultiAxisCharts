@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<SplitPane dividerPositions="0.6573033707865169" prefHeight="789.0" prefWidth="1248.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kostikiadis.test.TestFrameController">
+  <items>
+      <BorderPane fx:id="chartPane" prefHeight="664.0" prefWidth="519.0" />
+      <ScrollPane minWidth="427.0">
+         <content>
+            <FlowPane alignment="TOP_CENTER" minHeight="720.0" minWidth="427.0" prefHeight="720.0" prefWidth="427.0">
+               <children>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="733.0" prefWidth="448.0">
+                     <children>
+                        <GridPane layoutX="77.0" layoutY="65.0" prefHeight="316.0" prefWidth="339.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label prefHeight="84.0" prefWidth="208.0" text="Chart Type ">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <ComboBox fx:id="chartTypeComboBox" prefHeight="28.0" prefWidth="156.0" GridPane.columnIndex="1" />
+                              <Label prefHeight="84.0" prefWidth="208.0" text="Second Y-Axis" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label prefHeight="84.0" prefWidth="208.0" text="Background Grid" GridPane.rowIndex="3">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label prefHeight="84.0" prefWidth="208.0" text="X-Axis Type" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label prefHeight="84.0" prefWidth="208.0" text="First Y Regression" GridPane.rowIndex="4">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label prefHeight="84.0" prefWidth="208.0" text="Second Y  Regression" GridPane.rowIndex="5">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <CheckBox fx:id="secondAxisCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </CheckBox>
+                              <CheckBox fx:id="backgroundGridCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </CheckBox>
+                              <ComboBox prefHeight="28.0" prefWidth="156.0" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="xAxisTypeComboBox" />
+                              <ComboBox fx:id="y2RegressionComboBox" prefHeight="28.0" prefWidth="156.0" promptText="NONE" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <ComboBox fx:id="y1RegressionComboBox" prefHeight="28.0" prefWidth="156.0" promptText="NONE" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                           </children>
+                        </GridPane>
+                        <Label layoutX="25.0" layoutY="34.0" text="Basic Properties">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="24.0" layoutY="406.0" text="Appearence Properties">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <GridPane layoutX="74.0" layoutY="451.0" prefHeight="268.0" prefWidth="339.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label prefHeight="84.0" prefWidth="208.0" text="Title Font">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label prefHeight="84.0" prefWidth="208.0" text="X-Axis Font" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label prefHeight="84.0" prefWidth="208.0" text="X-TickMarks Font" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label prefHeight="84.0" prefWidth="208.0" text="Legend Font" GridPane.rowIndex="5">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label prefHeight="84.0" prefWidth="208.0" text="Y-Axis Font" GridPane.rowIndex="3">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label prefHeight="84.0" prefWidth="208.0" text="Y-TickMarks Font" GridPane.rowIndex="4">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <ComboBox prefHeight="28.0" prefWidth="156.0" promptText="NONE" GridPane.columnIndex="1" />
+                              <ComboBox prefHeight="28.0" prefWidth="156.0" promptText="NONE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <ComboBox prefHeight="28.0" prefWidth="156.0" promptText="NONE" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <ComboBox prefHeight="28.0" prefWidth="156.0" promptText="NONE" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <ComboBox prefHeight="28.0" prefWidth="156.0" promptText="NONE" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <ComboBox prefHeight="28.0" prefWidth="156.0" promptText="NONE" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </FlowPane>
+         </content>
+      </ScrollPane>
+  </items>
+</SplitPane>

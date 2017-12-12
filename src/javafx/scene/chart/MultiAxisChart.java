@@ -29,7 +29,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
-public abstract class MutliAxisChart extends BorderPane {
+public abstract class MultiAxisChart extends BorderPane {
 
 	public static final int LEFT_AXIS = 0;
 	public static final int RIGHT_AXIS = 1;
@@ -67,8 +67,9 @@ public abstract class MutliAxisChart extends BorderPane {
 
 	protected final String DEFAULT_COLORS[] = { "#f3622d", "#fba71b", "#57b757", "#41a9c9", "#4258c9", "#9a42c8",
 			"#c84164", "#888888" };
+	private boolean hasBackgroundGrid;
 
-	public MutliAxisChart(Axis<?> xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
+	public MultiAxisChart(Axis<?> xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
 
 		if (xAxis instanceof CategoryAxis) {
 
@@ -254,24 +255,23 @@ public abstract class MutliAxisChart extends BorderPane {
 
 		// TODO : set to listen axis value change as well
 
-		
 		y1Axis.layoutBoundsProperty().addListener(e -> {
 			plotPane.getChildren().removeAll(horizontalLines);
 			horizontalLines.clear();
-			
+
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
 					updateHorizontalLines();
 				}
 			});
-			
+
 		});
-		
+
 		xAxis.layoutBoundsProperty().addListener(e -> {
 			plotPane.getChildren().removeAll(verticalLines);
 			verticalLines.clear();
-			
+
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
@@ -279,8 +279,6 @@ public abstract class MutliAxisChart extends BorderPane {
 				}
 			});
 		});
-
-		
 
 	}
 
@@ -312,7 +310,8 @@ public abstract class MutliAxisChart extends BorderPane {
 
 	private synchronized void updateVerticalLines() {
 
-		
+		if (!hasBackgroundGrid)
+			return;
 
 		double bottomTitleHeight = getLabelHeight((Label) xAxis.lookup(".label"));
 
@@ -330,23 +329,21 @@ public abstract class MutliAxisChart extends BorderPane {
 			verticalLines.add(verticalLine);
 		}
 
-		for(Line l : verticalLines) {
-			if(!verticalLines.contains(l)) {
+		for (Line l : verticalLines) {
+			if (!verticalLines.contains(l)) {
 				plotPane.getChildren().add(l);
-			}else {
+			} else {
 				plotPane.getChildren().remove(l);
 				plotPane.getChildren().add(l);
 			}
 		}
-		
-		
-		
-		
+
 		drawValues();
 	}
 
 	private void updateHorizontalLines() {
-		
+		if (!hasBackgroundGrid)
+			return;
 
 		ObservableList<TickMark<Number>> yMarkList = y1Axis.getTickMarks();
 
@@ -377,15 +374,15 @@ public abstract class MutliAxisChart extends BorderPane {
 			horizontalLines.add(rec);
 		}
 
-		for(Rectangle rec : horizontalLines) {
-			if(!horizontalLines.contains(rec)) {
+		for (Rectangle rec : horizontalLines) {
+			if (!horizontalLines.contains(rec)) {
 				plotPane.getChildren().add(rec);
-			}else {
+			} else {
 				plotPane.getChildren().remove(rec);
 				plotPane.getChildren().add(rec);
 			}
 		}
-		
+
 		y1Axis.toFront();
 		xAxis.toFront();
 		xAxisLine.toFront();
@@ -395,11 +392,11 @@ public abstract class MutliAxisChart extends BorderPane {
 			y2Axis.toFront();
 			y2AxisLine.toFront();
 		}
-		
+
 		for (Line l : verticalLines) {
 			l.toFront();
 		}
-		
+
 		drawValues();
 	}
 
@@ -503,6 +500,10 @@ public abstract class MutliAxisChart extends BorderPane {
 
 	public void setData(ObservableList<XYChart.Series> data) {
 		this.data = data;
+	}
+
+	public void setBackgroundGrid(boolean hasBackgroundGrid) {
+		this.hasBackgroundGrid = hasBackgroundGrid;
 	}
 
 }

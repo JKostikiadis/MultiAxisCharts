@@ -4,7 +4,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class MultiAxisBarChart extends MutliAxisChart {
+public class MultiAxisBarChart extends MultiAxisChart {
 
 	public MultiAxisBarChart(CategoryAxis xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
 		super(xAxis, y1Axis, y2Axis);
@@ -22,8 +22,8 @@ public class MultiAxisBarChart extends MutliAxisChart {
 		ObservableList<XYChart.Series> data = getData();
 
 		CategoryAxis xAxis = (CategoryAxis) getXAxis();
-		NumberAxis y1Axis = (NumberAxis) getYAxis(MutliAxisChart.LEFT_AXIS);
-		NumberAxis y2Axis = (NumberAxis) getYAxis(MutliAxisChart.RIGHT_AXIS);
+		NumberAxis y1Axis = (NumberAxis) getYAxis(MultiAxisChart.LEFT_AXIS);
+		NumberAxis y2Axis = (NumberAxis) getYAxis(MultiAxisChart.RIGHT_AXIS);
 
 		int seriesIndex = 0;
 		for (XYChart.Series serie : data) {
@@ -36,7 +36,7 @@ public class MultiAxisBarChart extends MutliAxisChart {
 				double xPosition = xAxis.getDisplayPosition(xValue) + xAxis.getLayoutX();
 				double yPosition;
 
-				if (((int) value.getExtraValue()) == MutliAxisChart.LEFT_AXIS) {
+				if (((int) value.getExtraValue()) == MultiAxisChart.LEFT_AXIS) {
 					yPosition = y1Axis.getDisplayPosition(yValue) + y1Axis.getLayoutY();
 				} else {
 					yPosition = y2Axis.getDisplayPosition(yValue) + y2Axis.getLayoutY();
