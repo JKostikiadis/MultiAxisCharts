@@ -8,6 +8,7 @@ import javafx.scene.chart.Axis;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.MultiAxisBarChart;
 import javafx.scene.chart.MultiAxisChart;
+import javafx.scene.chart.MultiAxisLineChart;
 import javafx.scene.chart.MultiAxisScatterChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -122,13 +123,14 @@ public class TestFrameController {
 		}
 		xAxis.setLabel("Load (kg)");
 
-		System.out.println(BAR_CHART + " " + chartType);
 		if (chartType == SCATTER_CHART) {
 			chart = new MultiAxisScatterChart(850, 500, xAxis, y1Axis, y2Axis);
 		} else if (chartType == BAR_CHART) {
 			chart = new MultiAxisBarChart(850, 500, xAxis, y1Axis, y2Axis);
+		} else if (chartType == LINE_CHART) {
+			chart = new MultiAxisLineChart(850, 500, xAxis, y1Axis, y2Axis);
 		}
-
+		
 		if (chart == null)
 			return;
 		
