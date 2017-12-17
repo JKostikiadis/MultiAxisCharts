@@ -109,6 +109,18 @@ public class TestFrameController {
 			((CategoryAxis) xAxis).setCategories(FXCollections.<String>observableArrayList(
 					Arrays.asList(new String[] { "Power", "Force", "Agility", "Balance", "Speed" })));
 
+			series1.getData().add(new XYChart.Data("Power", 4, MultiAxisChart.LEFT_AXIS));
+			series1.getData().add(new XYChart.Data("Force", 10, MultiAxisChart.LEFT_AXIS));
+			series1.getData().add(new XYChart.Data("Agility", 15, MultiAxisChart.LEFT_AXIS));
+			series1.getData().add(new XYChart.Data("Balance", 8, MultiAxisChart.LEFT_AXIS));
+			series1.getData().add(new XYChart.Data("Speed", 5, MultiAxisChart.LEFT_AXIS));
+
+			series2.getData().add(new XYChart.Data("Power", 20, MultiAxisChart.LEFT_AXIS));
+			series2.getData().add(new XYChart.Data("Force", 15, MultiAxisChart.LEFT_AXIS));
+			series2.getData().add(new XYChart.Data("Agility", 13, MultiAxisChart.LEFT_AXIS));
+			series2.getData().add(new XYChart.Data("Balance", 12, MultiAxisChart.LEFT_AXIS));
+			series2.getData().add(new XYChart.Data("Speed", 14, MultiAxisChart.LEFT_AXIS));
+
 		} else {
 			xAxis = new NumberAxis(0, 15, 1);
 

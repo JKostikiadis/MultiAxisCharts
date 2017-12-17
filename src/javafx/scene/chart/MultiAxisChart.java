@@ -554,16 +554,16 @@ public abstract class MultiAxisChart extends BorderPane {
 				}
 
 				if (((int) value.getExtraValue()) == LEFT_AXIS) {
-					if (y1MaxValue < Double.parseDouble(xValue)) {
-						y1MaxValue = Double.parseDouble(xValue);
-					} else if (y1MinValue > Double.parseDouble(xValue)) {
-						y1MinValue = Double.parseDouble(xValue);
+					if (y1MaxValue < yValue.doubleValue()) {
+						y1MaxValue = yValue.doubleValue();
+					} else if (y1MinValue > yValue.doubleValue()) {
+						y1MinValue = yValue.doubleValue();
 					}
 				} else {
-					if (y2MaxValue < Double.parseDouble(xValue)) {
-						y2MaxValue = Double.parseDouble(xValue);
-					} else if (y2MinValue > Double.parseDouble(xValue)) {
-						y2MinValue = Double.parseDouble(xValue);
+					if (y2MaxValue < yValue.doubleValue()) {
+						y2MaxValue = yValue.doubleValue();
+					} else if (y2MinValue > yValue.doubleValue()) {
+						y2MinValue = yValue.doubleValue();
 					}
 				}
 			}
