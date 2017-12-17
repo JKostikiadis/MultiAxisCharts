@@ -67,12 +67,12 @@
                                     <Font size="16.0" />
                                  </font>
                               </Label>
-                              <CheckBox fx:id="secondAxisCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                              <CheckBox fx:id="secondAxisCheckBox" mnemonicParsing="false" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </CheckBox>
-                              <CheckBox fx:id="backgroundGridCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                              <CheckBox fx:id="backgroundGridCheckBox" mnemonicParsing="false" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <font>
                                     <Font size="16.0" />
                                  </font>

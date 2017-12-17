@@ -1,5 +1,6 @@
 package javafx.scene.chart;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -42,10 +43,15 @@ public class MultiAxisLineChart extends MultiAxisChart {
 				String xValue = value.getXValue().toString();
 				Number yValue = (Number) value.getYValue();
 
+				super.updateAxis(xValue,yValue,(int) value.getExtraValue());
+				
 				double xPosition, yPosition;
-				;
 
 				if (getXAxis() instanceof CategoryAxis) {
+					if(!((CategoryAxis) getXAxis()).getCategories().contains(xValue)) {
+						continue;
+					}
+					
 					xPosition = ((CategoryAxis) getXAxis()).getDisplayPosition(xValue)
 							+ ((CategoryAxis) getXAxis()).getLayoutX();
 				} else {
@@ -78,7 +84,8 @@ public class MultiAxisLineChart extends MultiAxisChart {
 
 			seriesIndex++;
 		}
-
+		
 		plotPane.getChildren().addAll(chartValues);
+		super.layout();
 	}
 }

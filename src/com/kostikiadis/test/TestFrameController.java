@@ -49,8 +49,8 @@ public class TestFrameController {
 
 	private int chartType;
 	private int xAxisType;
-	private boolean hasSecondAxis;
-	private boolean hasBackgroundGrid;
+	private boolean hasSecondAxis = true;
+	private boolean hasBackgroundGrid = true;
 
 	@FXML
 	public void initialize() {
@@ -98,7 +98,10 @@ public class TestFrameController {
 		}
 
 		XYChart.Series series1 = new XYChart.Series();
-		series1.setName("2003");
+		series1.setName("April");
+
+		XYChart.Series series2 = new XYChart.Series();
+		series2.setName("May");
 
 		if (xAxisType == CATEGORY_AXIS) {
 			xAxis = new CategoryAxis();
@@ -106,19 +109,32 @@ public class TestFrameController {
 			((CategoryAxis) xAxis).setCategories(FXCollections.<String>observableArrayList(
 					Arrays.asList(new String[] { "Power", "Force", "Agility", "Balance", "Speed" })));
 
-			series1.getData().add(new XYChart.Data("Power", 10, MultiAxisScatterChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data("Force", 18, MultiAxisScatterChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data("Agility", 4, MultiAxisScatterChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data("Balance", 60, MultiAxisScatterChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data("Speed", 37, MultiAxisScatterChart.LEFT_AXIS));
 		} else {
 			xAxis = new NumberAxis(0, 15, 1);
 
-			series1.getData().add(new XYChart.Data(1, 10, MultiAxisScatterChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data(5, 18, MultiAxisScatterChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data(7, 4, MultiAxisScatterChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data(3, 60, MultiAxisScatterChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data(14, 37, MultiAxisScatterChart.LEFT_AXIS));
+			series1.getData().add(new XYChart.Data(1, 4, MultiAxisChart.LEFT_AXIS));
+			series1.getData().add(new XYChart.Data(3, 10, MultiAxisChart.LEFT_AXIS));
+			series1.getData().add(new XYChart.Data(6, 15, MultiAxisChart.LEFT_AXIS));
+			series1.getData().add(new XYChart.Data(9, 8, MultiAxisChart.LEFT_AXIS));
+			series1.getData().add(new XYChart.Data(12, 5, MultiAxisChart.LEFT_AXIS));
+			series1.getData().add(new XYChart.Data(15, 18, MultiAxisChart.LEFT_AXIS));
+			series1.getData().add(new XYChart.Data(18, 15, MultiAxisChart.LEFT_AXIS));
+			series1.getData().add(new XYChart.Data(21, 13, MultiAxisChart.LEFT_AXIS));
+			series1.getData().add(new XYChart.Data(24, 19, MultiAxisChart.LEFT_AXIS));
+			series1.getData().add(new XYChart.Data(27, 21, MultiAxisChart.LEFT_AXIS));
+			series1.getData().add(new XYChart.Data(30, 21, MultiAxisChart.LEFT_AXIS));
+
+			series2.getData().add(new XYChart.Data(0, 20, MultiAxisChart.LEFT_AXIS));
+			series2.getData().add(new XYChart.Data(3, 15, MultiAxisChart.LEFT_AXIS));
+			series2.getData().add(new XYChart.Data(6, 13, MultiAxisChart.LEFT_AXIS));
+			series2.getData().add(new XYChart.Data(9, 12, MultiAxisChart.LEFT_AXIS));
+			series2.getData().add(new XYChart.Data(12, 14, MultiAxisChart.LEFT_AXIS));
+			series2.getData().add(new XYChart.Data(15, 18, MultiAxisChart.LEFT_AXIS));
+			series2.getData().add(new XYChart.Data(18, 25, MultiAxisChart.LEFT_AXIS));
+			series2.getData().add(new XYChart.Data(21, 25, MultiAxisChart.LEFT_AXIS));
+			series2.getData().add(new XYChart.Data(24, 23, MultiAxisChart.LEFT_AXIS));
+			series2.getData().add(new XYChart.Data(27, 26, MultiAxisChart.LEFT_AXIS));
+			series2.getData().add(new XYChart.Data(31, 26, MultiAxisChart.LEFT_AXIS));
 		}
 		xAxis.setLabel("Load (kg)");
 
@@ -134,7 +150,7 @@ public class TestFrameController {
 
 		chart.setTitle("Force, Power/Load");
 		chart.setBackgroundGrid(hasBackgroundGrid);
-		chart.getData().add(series1);
+		chart.getData().addAll(series1, series2);
 
 		chartPane.getChildren().clear();
 		chartPane.setCenter(chart);

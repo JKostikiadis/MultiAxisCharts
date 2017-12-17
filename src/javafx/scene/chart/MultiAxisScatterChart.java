@@ -32,6 +32,8 @@ public class MultiAxisScatterChart extends MultiAxisChart {
 				String xValue = value.getXValue().toString();
 				Number yValue = (Number) value.getYValue();
 
+				super.updateAxis(xValue,yValue,(int) value.getExtraValue());
+				
 				double xPosition;
 				
 				if (getXAxis() instanceof CategoryAxis) {
@@ -63,6 +65,7 @@ public class MultiAxisScatterChart extends MultiAxisChart {
 		}
 
 		plotPane.getChildren().addAll(chartValues);
+		super.layout();
 	}
 
 }

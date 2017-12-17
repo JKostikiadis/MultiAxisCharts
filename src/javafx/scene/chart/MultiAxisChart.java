@@ -104,6 +104,35 @@ public abstract class MultiAxisChart extends BorderPane {
 		initPlotPane();
 		setTitle();
 
+		listenOnAxisChanges();
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void listenOnAxisChanges() {
+
+		double xMin = -1;
+		double xMax = -1;
+		double y1Min = -1;
+		double y1Man = -1;
+		double y2Min = -1;
+		double y2Max = -1;
+
+		// rearrange X-Axis
+		if (xAxis instanceof NumberAxis) {
+			xMin = ((NumberAxis) getXAxis()).getLowerBound();
+			xMax = ((NumberAxis) getXAxis()).getUpperBound();
+		}
+
+		for (XYChart.Series serie : data) {
+			ObservableList<XYChart.Data> dataSeries = serie.getData();
+
+			for (XYChart.Data value : dataSeries) {
+
+			}
+
+			//System.out.println("x-Axis value range (" + min + "," + max + ")");
+		}
+
 	}
 
 	protected void drawValues() {
@@ -405,7 +434,9 @@ public abstract class MultiAxisChart extends BorderPane {
 		legendPane = new TilePane();
 		legendPane.setAlignment(Pos.CENTER);
 		legendPane.setPadding(new Insets(5, 2, 5, 2));
-		legendPane.setPrefWidth(5);
+		legendPane.setPrefColumns(5);
+		
+		
 		legendPane.setVgap(5);
 		legendPane.setHgap(10);
 		legendPane.setStyle(
@@ -483,14 +514,17 @@ public abstract class MultiAxisChart extends BorderPane {
 	 */
 	protected void updateLegend() {
 		legendPane.getChildren().clear();
+		double width = -1;
 		if (getData() != null) {
 			for (int seriesIndex = 0; seriesIndex < getData().size(); seriesIndex++) {
 				Series series = getData().get(seriesIndex);
 				addLegend(series.getName());
+				width += 80;  // FIXME : need to find the correct width size and apply it
 			}
 		}
 		legendPane.requestLayout();
 		legendPane.setVisible(!getData().isEmpty());
+		legendPane.setPrefWidth(width);
 
 	}
 
@@ -500,10 +534,37 @@ public abstract class MultiAxisChart extends BorderPane {
 
 	public void setData(ObservableList<XYChart.Series> data) {
 		this.data = data;
+		listenOnAxisChanges();
 	}
 
 	public void setBackgroundGrid(boolean hasBackgroundGrid) {
 		this.hasBackgroundGrid = hasBackgroundGrid;
+	}
+
+	public void updateAxis(String xValue, Number yValue, int yAxisPos) {
+		if(xAxis instanceof NumberAxis) {
+			double value = Double.parseDouble(xValue);
+			NumberAxis xAxis = ((NumberAxis)this.xAxis);
+			if(xAxis.getUpperBound() < value) {
+				xAxis.setUpperBound(value);
+			}else if(xAxis.getLowerBound() > value) {
+				xAxis.setLowerBound(value);
+			}
+		}
+		
+		if(yAxisPos == LEFT_AXIS) {
+			if(y1Axis.getUpperBound() < yValue.doubleValue()) {
+				y1Axis.setUpperBound(yValue.doubleValue());
+			}else if(y1Axis.getLowerBound() > yValue.doubleValue()) {
+				y1Axis.setLowerBound(yValue.doubleValue());
+			}
+		}else {
+			if(y2Axis.getUpperBound() < yValue.doubleValue()) {
+				y2Axis.setUpperBound(yValue.doubleValue());
+			}else if(y2Axis.getLowerBound() > yValue.doubleValue()) {
+				y2Axis.setLowerBound(yValue.doubleValue());
+			}
+		}
 	}
 
 }
