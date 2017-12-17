@@ -21,12 +21,12 @@ public class MultiAxisAreaChart extends MultiAxisChart {
 	public MultiAxisAreaChart(int width, int height, Axis<?> xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
 		this(xAxis, y1Axis, y2Axis);
 		setPrefSize(width, height);
-		drawValues();
 	}
 
 	@Override
 	public void drawValues() {
 		super.drawValues();
+		
 		ObservableList<XYChart.Series> data = getData();
 
 		NumberAxis y1Axis = (NumberAxis) getYAxis(MultiAxisChart.LEFT_AXIS);
@@ -53,8 +53,6 @@ public class MultiAxisAreaChart extends MultiAxisChart {
 			for (XYChart.Data value : dataSeries) {
 				String xValue = value.getXValue().toString();
 				Number yValue = (Number) value.getYValue();
-				
-				super.updateAxis(xValue,yValue,(int) value.getExtraValue());
 
 				Color color = Color.web(DEFAULT_COLORS[seriesIndex % DEFAULT_COLORS.length]);;
 
@@ -113,6 +111,5 @@ public class MultiAxisAreaChart extends MultiAxisChart {
 		}
 
 		plotPane.getChildren().addAll(chartValues);
-		super.layout();
 	}
 }

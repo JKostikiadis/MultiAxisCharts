@@ -14,7 +14,6 @@ public class MultiAxisBarChart extends MultiAxisChart {
 	public MultiAxisBarChart(int width, int height, Axis<?> xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
 		this(xAxis, y1Axis, y2Axis);
 		setPrefSize(width, height);
-		drawValues();
 	}
 
 	@Override
@@ -33,7 +32,7 @@ public class MultiAxisBarChart extends MultiAxisChart {
 				String xValue = value.getXValue().toString();
 				Number yValue = (Number) value.getYValue();
 
-				double xPosition;
+				double xPosition, yPosition;
 				
 				if (getXAxis() instanceof CategoryAxis) {
 					xPosition = ((CategoryAxis) getXAxis()).getDisplayPosition(xValue)
@@ -42,8 +41,6 @@ public class MultiAxisBarChart extends MultiAxisChart {
 					xPosition = ((NumberAxis) getXAxis()).getDisplayPosition(Double.parseDouble(xValue))
 							+ ((NumberAxis) getXAxis()).getLayoutX();
 				}
-
-				double yPosition;
 
 				if (((int) value.getExtraValue()) == MultiAxisChart.LEFT_AXIS) {
 					yPosition = y1Axis.getDisplayPosition(yValue) + y1Axis.getLayoutY();

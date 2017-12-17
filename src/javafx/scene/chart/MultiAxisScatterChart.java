@@ -1,5 +1,6 @@
 package javafx.scene.chart;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -13,12 +14,12 @@ public class MultiAxisScatterChart extends MultiAxisChart {
 	public MultiAxisScatterChart(int width, int height, Axis<?> xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
 		this(xAxis, y1Axis, y2Axis);
 		setPrefSize(width, height);
-		drawValues();
 	}
 
 	@Override
 	public void drawValues() {
 		super.drawValues();
+
 		ObservableList<XYChart.Series> data = getData();
 
 		NumberAxis y1Axis = (NumberAxis) getYAxis(MultiAxisChart.LEFT_AXIS);
@@ -32,10 +33,8 @@ public class MultiAxisScatterChart extends MultiAxisChart {
 				String xValue = value.getXValue().toString();
 				Number yValue = (Number) value.getYValue();
 
-				super.updateAxis(xValue,yValue,(int) value.getExtraValue());
-				
-				double xPosition;
-				
+				double xPosition, yPosition;
+
 				if (getXAxis() instanceof CategoryAxis) {
 					xPosition = ((CategoryAxis) getXAxis()).getDisplayPosition(xValue)
 							+ ((CategoryAxis) getXAxis()).getLayoutX();
@@ -43,8 +42,6 @@ public class MultiAxisScatterChart extends MultiAxisChart {
 					xPosition = ((NumberAxis) getXAxis()).getDisplayPosition(Double.parseDouble(xValue))
 							+ ((NumberAxis) getXAxis()).getLayoutX();
 				}
-
-				double yPosition;
 
 				if (((int) value.getExtraValue()) == MultiAxisChart.LEFT_AXIS) {
 					yPosition = y1Axis.getDisplayPosition(yValue) + y1Axis.getLayoutY();
@@ -65,7 +62,6 @@ public class MultiAxisScatterChart extends MultiAxisChart {
 		}
 
 		plotPane.getChildren().addAll(chartValues);
-		super.layout();
 	}
 
 }

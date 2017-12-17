@@ -104,40 +104,12 @@ public abstract class MultiAxisChart extends BorderPane {
 		initPlotPane();
 		setTitle();
 
-		listenOnAxisChanges();
-	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void listenOnAxisChanges() {
-
-		double xMin = -1;
-		double xMax = -1;
-		double y1Min = -1;
-		double y1Man = -1;
-		double y2Min = -1;
-		double y2Max = -1;
-
-		// rearrange X-Axis
-		if (xAxis instanceof NumberAxis) {
-			xMin = ((NumberAxis) getXAxis()).getLowerBound();
-			xMax = ((NumberAxis) getXAxis()).getUpperBound();
-		}
-
-		for (XYChart.Series serie : data) {
-			ObservableList<XYChart.Data> dataSeries = serie.getData();
-
-			for (XYChart.Data value : dataSeries) {
-
-			}
-
-			//System.out.println("x-Axis value range (" + min + "," + max + ")");
-		}
-
 	}
 
 	protected void drawValues() {
 		plotPane.getChildren().removeAll(chartValues);
 		chartValues.clear();
+		updateAxis();
 	}
 
 	private void setTitle() {
@@ -180,7 +152,7 @@ public abstract class MultiAxisChart extends BorderPane {
 		plotPane = new AnchorPane() {
 			@Override
 			public void requestLayout() {
-				// do nothing
+				super.requestLayout();
 			}
 
 			@Override
@@ -435,8 +407,7 @@ public abstract class MultiAxisChart extends BorderPane {
 		legendPane.setAlignment(Pos.CENTER);
 		legendPane.setPadding(new Insets(5, 2, 5, 2));
 		legendPane.setPrefColumns(5);
-		
-		
+
 		legendPane.setVgap(5);
 		legendPane.setHgap(10);
 		legendPane.setStyle(
@@ -519,7 +490,7 @@ public abstract class MultiAxisChart extends BorderPane {
 			for (int seriesIndex = 0; seriesIndex < getData().size(); seriesIndex++) {
 				Series series = getData().get(seriesIndex);
 				addLegend(series.getName());
-				width += 80;  // FIXME : need to find the correct width size and apply it
+				width += 80; // FIXME : need to find the correct width size and apply it
 			}
 		}
 		legendPane.requestLayout();
@@ -534,37 +505,86 @@ public abstract class MultiAxisChart extends BorderPane {
 
 	public void setData(ObservableList<XYChart.Series> data) {
 		this.data = data;
-		listenOnAxisChanges();
+		updateAxis();
 	}
 
 	public void setBackgroundGrid(boolean hasBackgroundGrid) {
 		this.hasBackgroundGrid = hasBackgroundGrid;
 	}
 
-	public void updateAxis(String xValue, Number yValue, int yAxisPos) {
-		if(xAxis instanceof NumberAxis) {
-			double value = Double.parseDouble(xValue);
-			NumberAxis xAxis = ((NumberAxis)this.xAxis);
-			if(xAxis.getUpperBound() < value) {
-				xAxis.setUpperBound(value);
-			}else if(xAxis.getLowerBound() > value) {
-				xAxis.setLowerBound(value);
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void updateAxis() {
+		ObservableList<XYChart.Series> data = getData();
+
+		NumberAxis y1Axis = (NumberAxis) getYAxis(MultiAxisChart.LEFT_AXIS);
+		NumberAxis y2Axis = (NumberAxis) getYAxis(MultiAxisChart.RIGHT_AXIS);
+
+		double xMaxValue = Double.MIN_VALUE;
+		double xMinValue = Double.MAX_VALUE;
+
+		if (xAxis instanceof NumberAxis) {
+			xMaxValue = ((NumberAxis) xAxis).getUpperBound();
+			xMinValue = ((NumberAxis) xAxis).getLowerBound();
+		}
+
+		double y1MaxValue = y1Axis.getUpperBound();
+		double y1MinValue = y1Axis.getLowerBound();
+
+		double y2MaxValue = Double.MIN_VALUE;
+		double y2MinValue = Double.MAX_VALUE;
+
+		if (y2Axis != null) {
+			y2MaxValue = y2Axis.getUpperBound();
+			y2MinValue = y2Axis.getLowerBound();
+		}
+
+		for (XYChart.Series serie : data) {
+			ObservableList<XYChart.Data> dataSeries = serie.getData();
+
+			for (XYChart.Data value : dataSeries) {
+				String xValue = value.getXValue().toString();
+				Number yValue = (Number) value.getYValue();
+
+				if (xAxis instanceof NumberAxis) {
+					if (xMaxValue < Double.parseDouble(xValue)) {
+						xMaxValue = Double.parseDouble(xValue);
+					} else if (xMinValue > Double.parseDouble(xValue)) {
+						xMinValue = Double.parseDouble(xValue);
+					}
+				}
+
+				if (((int) value.getExtraValue()) == LEFT_AXIS) {
+					if (y1MaxValue < Double.parseDouble(xValue)) {
+						y1MaxValue = Double.parseDouble(xValue);
+					} else if (y1MinValue > Double.parseDouble(xValue)) {
+						y1MinValue = Double.parseDouble(xValue);
+					}
+				} else {
+					if (y2MaxValue < Double.parseDouble(xValue)) {
+						y2MaxValue = Double.parseDouble(xValue);
+					} else if (y2MinValue > Double.parseDouble(xValue)) {
+						y2MinValue = Double.parseDouble(xValue);
+					}
+				}
 			}
 		}
-		
-		if(yAxisPos == LEFT_AXIS) {
-			if(y1Axis.getUpperBound() < yValue.doubleValue()) {
-				y1Axis.setUpperBound(yValue.doubleValue());
-			}else if(y1Axis.getLowerBound() > yValue.doubleValue()) {
-				y1Axis.setLowerBound(yValue.doubleValue());
-			}
-		}else {
-			if(y2Axis.getUpperBound() < yValue.doubleValue()) {
-				y2Axis.setUpperBound(yValue.doubleValue());
-			}else if(y2Axis.getLowerBound() > yValue.doubleValue()) {
-				y2Axis.setLowerBound(yValue.doubleValue());
-			}
+
+		if (xAxis instanceof NumberAxis) {
+			NumberAxis xAxis = ((NumberAxis) this.xAxis);
+			xAxis.setUpperBound(xMaxValue);
+			xAxis.setLowerBound(xMinValue);
 		}
+
+		y1Axis.setUpperBound(y1MaxValue);
+		y1Axis.setLowerBound(y1MinValue);
+
+		if (y2Axis != null) {
+			y2Axis.setUpperBound(y2MaxValue);
+			y2Axis.setLowerBound(y2MinValue);
+		}
+
+		layout();
+		requestFocus();
 	}
 
 }

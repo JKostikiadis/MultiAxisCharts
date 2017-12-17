@@ -18,12 +18,12 @@ public class MultiAxisLineChart extends MultiAxisChart {
 	public MultiAxisLineChart(int width, int height, Axis<?> xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
 		this(xAxis, y1Axis, y2Axis);
 		setPrefSize(width, height);
-		drawValues();
 	}
 
 	@Override
 	public void drawValues() {
 		super.drawValues();
+		
 		ObservableList<XYChart.Series> data = getData();
 
 		NumberAxis y1Axis = (NumberAxis) getYAxis(MultiAxisChart.LEFT_AXIS);
@@ -43,8 +43,6 @@ public class MultiAxisLineChart extends MultiAxisChart {
 				String xValue = value.getXValue().toString();
 				Number yValue = (Number) value.getYValue();
 
-				super.updateAxis(xValue,yValue,(int) value.getExtraValue());
-				
 				double xPosition, yPosition;
 
 				if (getXAxis() instanceof CategoryAxis) {
@@ -86,6 +84,5 @@ public class MultiAxisLineChart extends MultiAxisChart {
 		}
 		
 		plotPane.getChildren().addAll(chartValues);
-		super.layout();
 	}
 }
