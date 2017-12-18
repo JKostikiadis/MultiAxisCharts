@@ -48,7 +48,7 @@ public class MultiAxisScatterChart extends MultiAxisChart {
 				} else {
 					yPosition = y2Axis.getDisplayPosition(yValue) + y2Axis.getLayoutY();
 				}
-
+				
 				Circle valueShape = new Circle(5);
 				valueShape.setFill(Color.web(DEFAULT_COLORS[seriesIndex % DEFAULT_COLORS.length]));
 

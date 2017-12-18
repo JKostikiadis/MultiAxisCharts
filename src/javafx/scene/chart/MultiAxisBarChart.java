@@ -7,11 +7,11 @@ import javafx.scene.shape.Rectangle;
 
 public class MultiAxisBarChart extends MultiAxisChart {
 
-	public MultiAxisBarChart(Axis<?> xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
+	public MultiAxisBarChart(CategoryAxis xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
 		super(xAxis, y1Axis, y2Axis);
 	}
 
-	public MultiAxisBarChart(int width, int height, Axis<?> xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
+	public MultiAxisBarChart(int width, int height, CategoryAxis xAxis, NumberAxis y1Axis, NumberAxis y2Axis) {
 		this(xAxis, y1Axis, y2Axis);
 		setPrefSize(width, height);
 	}

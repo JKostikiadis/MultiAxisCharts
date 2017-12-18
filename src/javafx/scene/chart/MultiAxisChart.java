@@ -103,7 +103,6 @@ public abstract class MultiAxisChart extends BorderPane {
 		initLegendPane();
 		initPlotPane();
 		setTitle();
-
 	}
 
 	protected void drawValues() {

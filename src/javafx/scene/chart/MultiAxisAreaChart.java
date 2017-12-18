@@ -71,11 +71,9 @@ public class MultiAxisAreaChart extends MultiAxisChart {
 				}
 						
 				if(allPoints.isEmpty()) {
-					double x = getXAxis().getLayoutX() + getXAxis().getTranslateX();
 					double y = getXAxis().getLayoutY() + getXAxis().getTranslateY();
 					
 					linePath.getElements().add(new MoveTo(xPosition, yPosition));
-						
 					allPoints.add(new Point(xPosition, y, 0, color));
 				}else {
 					linePath.getElements().add(new LineTo(xPosition, yPosition));

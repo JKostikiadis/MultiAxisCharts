@@ -56,6 +56,12 @@ public class TestFrameController {
 	public void initialize() {
 		chartTypeComboBox.getItems().addAll(new String[] { "Scatter Chart", "Bar Chart", "Line Chart", "Area Chart" });
 		chartTypeComboBox.setOnAction(e -> {
+			if(chartTypeComboBox.getSelectionModel().getSelectedItem().equals("Bar Chart")) {
+				xAxisTypeComboBox.getSelectionModel().select(0);
+				xAxisTypeComboBox.setDisable(true);
+			}else {
+				xAxisTypeComboBox.setDisable(false);
+			}
 			chartType = chartTypeComboBox.getSelectionModel().getSelectedIndex();
 			updateChart();
 		});
@@ -136,24 +142,24 @@ public class TestFrameController {
 			series1.getData().add(new XYChart.Data(27, 21, MultiAxisChart.LEFT_AXIS));
 			series1.getData().add(new XYChart.Data(30, 21, MultiAxisChart.LEFT_AXIS));
 
-			series2.getData().add(new XYChart.Data(0, 20, MultiAxisChart.LEFT_AXIS));
-			series2.getData().add(new XYChart.Data(3, 15, MultiAxisChart.LEFT_AXIS));
-			series2.getData().add(new XYChart.Data(6, 13, MultiAxisChart.LEFT_AXIS));
-			series2.getData().add(new XYChart.Data(9, 12, MultiAxisChart.LEFT_AXIS));
-			series2.getData().add(new XYChart.Data(12, 14, MultiAxisChart.LEFT_AXIS));
-			series2.getData().add(new XYChart.Data(15, 18, MultiAxisChart.LEFT_AXIS));
-			series2.getData().add(new XYChart.Data(18, 25, MultiAxisChart.LEFT_AXIS));
-			series2.getData().add(new XYChart.Data(21, 25, MultiAxisChart.LEFT_AXIS));
-			series2.getData().add(new XYChart.Data(24, 23, MultiAxisChart.LEFT_AXIS));
-			series2.getData().add(new XYChart.Data(27, 26, MultiAxisChart.LEFT_AXIS));
-			series2.getData().add(new XYChart.Data(31, 26, MultiAxisChart.LEFT_AXIS));
+			series2.getData().add(new XYChart.Data(0, 20, MultiAxisChart.RIGHT_AXIS));
+			series2.getData().add(new XYChart.Data(3, 15, MultiAxisChart.RIGHT_AXIS));
+			series2.getData().add(new XYChart.Data(6, 13, MultiAxisChart.RIGHT_AXIS));
+			series2.getData().add(new XYChart.Data(9, 12, MultiAxisChart.RIGHT_AXIS));
+			series2.getData().add(new XYChart.Data(12, 14, MultiAxisChart.RIGHT_AXIS));
+			series2.getData().add(new XYChart.Data(15, 18, MultiAxisChart.RIGHT_AXIS));
+			series2.getData().add(new XYChart.Data(18, 25, MultiAxisChart.RIGHT_AXIS));
+			series2.getData().add(new XYChart.Data(21, 25, MultiAxisChart.RIGHT_AXIS));
+			series2.getData().add(new XYChart.Data(24, 23, MultiAxisChart.RIGHT_AXIS));
+			series2.getData().add(new XYChart.Data(27, 26, MultiAxisChart.RIGHT_AXIS));
+			series2.getData().add(new XYChart.Data(31, 26, MultiAxisChart.RIGHT_AXIS));
 		}
 		xAxis.setLabel("Load (kg)");
 
 		if (chartType == SCATTER_CHART) {
 			chart = new MultiAxisScatterChart(400, 400, xAxis, y1Axis, y2Axis);
 		} else if (chartType == BAR_CHART) {
-			chart = new MultiAxisBarChart(400, 400, xAxis, y1Axis, y2Axis);
+			chart = new MultiAxisBarChart(400, 400, (CategoryAxis) xAxis, y1Axis, y2Axis);
 		} else if (chartType == LINE_CHART) {
 			chart = new MultiAxisLineChart(400, 400, xAxis, y1Axis, y2Axis);
 		} else {
