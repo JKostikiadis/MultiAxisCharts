@@ -53,7 +53,7 @@ Some hints :
 You can clone and build the project or use Combination of MultiAxisChart.java + the multiAxis chart of your choice ex ( MultiAxisScatterChart ) and add them directly to your project or you can use the pre-build jar containing all the chart implementations
 
 #### Pre-Build Jar 
-[MultiAxisScatterChart.jar V1.0](https://github.com/JKostikiadis/MultiAxisCharts/raw/master/build/MultiAxisScatterChart.jar)
+[MultiAxisScatterChart.jar V1.0](https://github.com/JKostikiadis/MultiAxisCharts/raw/master/build/MultiAxisCharts.jar)
 
 
 ### Todos
