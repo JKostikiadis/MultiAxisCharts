@@ -41,9 +41,6 @@ series2.getData().add(new MultiAxisChart.Data<Number, Number>(21, 600, MultiAxis
 chart.getData().addAll(series1, series2);
 ```
 
-![MultiAxisScatterChart creation ](./preview/MultiAxisScatterChart.png)
-
-
 
 
 
