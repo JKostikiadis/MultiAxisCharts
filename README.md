@@ -10,7 +10,8 @@ Available Chart:
   - MultiAxisLineChart
   - MultiAxisAreaChart 
   - MultiAxisBarChart
-  
+
+
 ### Usage
 
 The charts uses the well knowned Axis (NumberAxis, CategoryAxis) and to add data to the chart you have to add one or more MultiAxisChart.Series<?,?> containing new MultiAxisChart.Data<?,?> data. Example :
@@ -41,18 +42,18 @@ series2.getData().add(new MultiAxisChart.Data<Number, Number>(21, 600, MultiAxis
 chart.getData().addAll(series1, series2);
 ```
 
-
-
-
-
-
+Some hints :
+- The extra value of the MultiAxisChart.Data defines the Y Axis in which the data will be displayed. Trying to add data to the Y2_AXIS while the y2Axis is null will throw a NullPointerException
+- MultiAxisBarChart can only support CategoryAxis for X Axis.
+- The chart iself is not animated but the Axis are.
+- By default all the Axis has autoResizable = false keep that in mind.
 
 ### Installation
 
+You can clone and build the project or use Combination of MultiAxisChart.java + the multiAxis chart of your choice ex ( MultiAxisScatterChart ) and add them directly to your project or you can use the pre-build jar containing all the chart implementations
 
-
-
-
+#### Pre-Build Jar 
+[MultiAxisScatterChart.jar V1.0](https://github.com/JKostikiadis/MultiAxisCharts/raw/master/build/MultiAxisScatterChart.jar)
 
 
 ### Todos
