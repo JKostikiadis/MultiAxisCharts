@@ -12,7 +12,7 @@ import javafx.scene.chart.MultiAxisChart;
 import javafx.scene.chart.MultiAxisLineChart;
 import javafx.scene.chart.MultiAxisScatterChart;
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.MultiAxisChart;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.BorderPane;
@@ -56,10 +56,10 @@ public class TestFrameController {
 	public void initialize() {
 		chartTypeComboBox.getItems().addAll(new String[] { "Scatter Chart", "Bar Chart", "Line Chart", "Area Chart" });
 		chartTypeComboBox.setOnAction(e -> {
-			if(chartTypeComboBox.getSelectionModel().getSelectedItem().equals("Bar Chart")) {
+			if (chartTypeComboBox.getSelectionModel().getSelectedItem().equals("Bar Chart")) {
 				xAxisTypeComboBox.getSelectionModel().select(0);
 				xAxisTypeComboBox.setDisable(true);
-			}else {
+			} else {
 				xAxisTypeComboBox.setDisable(false);
 			}
 			chartType = chartTypeComboBox.getSelectionModel().getSelectedIndex();
@@ -95,18 +95,18 @@ public class TestFrameController {
 		NumberAxis y1Axis = null;
 		NumberAxis y2Axis = null;
 
-		y1Axis = new NumberAxis(0, 80, 10);
+		y1Axis = new NumberAxis();
 		y1Axis.setLabel("Force (N)");
 
 		if (hasSecondAxis) {
-			y2Axis = new NumberAxis(0, 10, 1);
+			y2Axis = new NumberAxis();
 			y2Axis.setLabel("Speed");
 		}
 
-		XYChart.Series series1 = new XYChart.Series();
+		MultiAxisChart.Series series1 = new MultiAxisChart.Series();
 		series1.setName("April");
 
-		XYChart.Series series2 = new XYChart.Series();
+		MultiAxisChart.Series series2 = new MultiAxisChart.Series();
 		series2.setName("May");
 
 		if (xAxisType == CATEGORY_AXIS) {
@@ -115,59 +115,58 @@ public class TestFrameController {
 			((CategoryAxis) xAxis).setCategories(FXCollections.<String>observableArrayList(
 					Arrays.asList(new String[] { "Power", "Force", "Agility", "Balance", "Speed" })));
 
-			series1.getData().add(new XYChart.Data("Power", 4, MultiAxisChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data("Force", 10, MultiAxisChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data("Agility", 15, MultiAxisChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data("Balance", 8, MultiAxisChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data("Speed", 5, MultiAxisChart.LEFT_AXIS));
+			series1.getData().add(new MultiAxisChart.Data("Power", 4, MultiAxisChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data("Force", 10, MultiAxisChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data("Agility", 15, MultiAxisChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data("Balance", 8, MultiAxisChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data("Speed", 5, MultiAxisChart.Y1_AXIS));
 
-			series2.getData().add(new XYChart.Data("Power", 20, MultiAxisChart.LEFT_AXIS));
-			series2.getData().add(new XYChart.Data("Force", 15, MultiAxisChart.LEFT_AXIS));
-			series2.getData().add(new XYChart.Data("Agility", 13, MultiAxisChart.LEFT_AXIS));
-			series2.getData().add(new XYChart.Data("Balance", 12, MultiAxisChart.LEFT_AXIS));
-			series2.getData().add(new XYChart.Data("Speed", 14, MultiAxisChart.LEFT_AXIS));
+			series2.getData().add(new MultiAxisChart.Data("Power", 20, MultiAxisChart.Y2_AXIS));
+			series2.getData().add(new MultiAxisChart.Data("Force", 15, MultiAxisChart.Y2_AXIS));
+			series2.getData().add(new MultiAxisChart.Data("Agility", 13, MultiAxisChart.Y2_AXIS));
+			series2.getData().add(new MultiAxisChart.Data("Balance", 12, MultiAxisChart.Y2_AXIS));
+			series2.getData().add(new MultiAxisChart.Data("Speed", 14, MultiAxisChart.Y2_AXIS));
 
 		} else {
-			xAxis = new NumberAxis(0, 15, 1);
+			xAxis = new NumberAxis();
 
-			series1.getData().add(new XYChart.Data(1, 4, MultiAxisChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data(3, 10, MultiAxisChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data(6, 15, MultiAxisChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data(9, 8, MultiAxisChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data(12, 5, MultiAxisChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data(15, 18, MultiAxisChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data(18, 15, MultiAxisChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data(21, 13, MultiAxisChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data(24, 19, MultiAxisChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data(27, 21, MultiAxisChart.LEFT_AXIS));
-			series1.getData().add(new XYChart.Data(30, 21, MultiAxisChart.LEFT_AXIS));
+			series1.getData().add(new MultiAxisChart.Data(1, 4, MultiAxisChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data(3, 10, MultiAxisChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data(6, 15, MultiAxisChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data(9, 8, MultiAxisChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data(12, 5, MultiAxisChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data(15, 18, MultiAxisChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data(18, 15, MultiAxisChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data(21, 13, MultiAxisChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data(24, 19, MultiAxisChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data(27, 21, MultiAxisChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data(30, 21, MultiAxisChart.Y1_AXIS));
 
-			series2.getData().add(new XYChart.Data(0, 20, MultiAxisChart.RIGHT_AXIS));
-			series2.getData().add(new XYChart.Data(3, 15, MultiAxisChart.RIGHT_AXIS));
-			series2.getData().add(new XYChart.Data(6, 13, MultiAxisChart.RIGHT_AXIS));
-			series2.getData().add(new XYChart.Data(9, 12, MultiAxisChart.RIGHT_AXIS));
-			series2.getData().add(new XYChart.Data(12, 14, MultiAxisChart.RIGHT_AXIS));
-			series2.getData().add(new XYChart.Data(15, 18, MultiAxisChart.RIGHT_AXIS));
-			series2.getData().add(new XYChart.Data(18, 25, MultiAxisChart.RIGHT_AXIS));
-			series2.getData().add(new XYChart.Data(21, 25, MultiAxisChart.RIGHT_AXIS));
-			series2.getData().add(new XYChart.Data(24, 23, MultiAxisChart.RIGHT_AXIS));
-			series2.getData().add(new XYChart.Data(27, 26, MultiAxisChart.RIGHT_AXIS));
-			series2.getData().add(new XYChart.Data(31, 26, MultiAxisChart.RIGHT_AXIS));
+			series2.getData().add(new MultiAxisChart.Data(0, 20, MultiAxisChart.Y2_AXIS));
+			series2.getData().add(new MultiAxisChart.Data(3, 15, MultiAxisChart.Y2_AXIS));
+			series2.getData().add(new MultiAxisChart.Data(6, 13, MultiAxisChart.Y2_AXIS));
+			series2.getData().add(new MultiAxisChart.Data(9, 12, MultiAxisChart.Y2_AXIS));
+			series2.getData().add(new MultiAxisChart.Data(12, 14, MultiAxisChart.Y2_AXIS));
+			series2.getData().add(new MultiAxisChart.Data(15, 18, MultiAxisChart.Y2_AXIS));
+			series2.getData().add(new MultiAxisChart.Data(18, 25, MultiAxisChart.Y2_AXIS));
+			series2.getData().add(new MultiAxisChart.Data(21, 25, MultiAxisChart.Y2_AXIS));
+			series2.getData().add(new MultiAxisChart.Data(24, 23, MultiAxisChart.Y2_AXIS));
+			series2.getData().add(new MultiAxisChart.Data(27, 26, MultiAxisChart.Y2_AXIS));
+			series2.getData().add(new MultiAxisChart.Data(31, 26, MultiAxisChart.Y2_AXIS));
 		}
 		xAxis.setLabel("Load (kg)");
 
 		if (chartType == SCATTER_CHART) {
-			chart = new MultiAxisScatterChart(400, 400, xAxis, y1Axis, y2Axis);
+			chart = new MultiAxisScatterChart(xAxis, y1Axis, y2Axis);
 		} else if (chartType == BAR_CHART) {
-			chart = new MultiAxisBarChart(400, 400, (CategoryAxis) xAxis, y1Axis, y2Axis);
+			chart = new MultiAxisBarChart((CategoryAxis) xAxis, y1Axis, y2Axis);
 		} else if (chartType == LINE_CHART) {
-			chart = new MultiAxisLineChart(400, 400, xAxis, y1Axis, y2Axis);
+			chart = new MultiAxisLineChart(xAxis, y1Axis, y2Axis);
 		} else {
-			chart = new MultiAxisAreaChart(400, 400, xAxis, y1Axis, y2Axis);
+			chart = new MultiAxisAreaChart(xAxis, y1Axis, y2Axis);
 		}
 
 		chart.setTitle("Force, Power/Load");
-		chart.setBackgroundGrid(hasBackgroundGrid);
 		chart.getData().addAll(series1, series2);
 
 		chartPane.getChildren().clear();
