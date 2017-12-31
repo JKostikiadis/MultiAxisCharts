@@ -98,10 +98,11 @@ public class TestFrameController {
 		y1Axis = new NumberAxis();
 		y1Axis.setLabel("Force (N)");
 
-		if (hasSecondAxis) {
-			y2Axis = new NumberAxis();
-			y2Axis.setLabel("Speed");
-		}
+		y2Axis = new NumberAxis();
+		y2Axis.setLabel("Speed");
+		
+		y2Axis.setVisible(hasSecondAxis);
+		
 
 		MultiAxisChart.Series series1 = new MultiAxisChart.Series();
 		series1.setName("April");
@@ -166,6 +167,7 @@ public class TestFrameController {
 			chart = new MultiAxisAreaChart(xAxis, y1Axis, y2Axis);
 		}
 
+		chart.getStylesheets().add(this.getClass().getResource("style.css").toString());
 		chart.setTitle("Force, Power/Load");
 		chart.getData().addAll(series1, series2);
 

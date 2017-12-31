@@ -890,7 +890,7 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 		yAxisHeight = Math.ceil(yAxisHeight);
 		y2AxisWidth = Math.ceil(y2AxisWidth);
 		y2AxisHeight = Math.ceil(y2AxisHeight);
-
+		
 		// calc xAxis height
 		double xAxisY = 0;
 		xa.setVisible(true);
@@ -901,11 +901,12 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 		ya.setVisible(true);
 		yAxisX = left + 1;
 		left += yAxisWidth;
-
 		
-		// TODO : I need to fix the location of the x and y2 axis, for optimization purposes 
+		xAxisWidth = width - y2AxisWidth-left;
+
+		// TODO : Check again the approach below
 		// resize axises
-		xa.resizeRelocate(left, xAxisY, width - y2AxisWidth-left, xAxisHeight);
+		xa.resizeRelocate(left, xAxisY, xAxisWidth, xAxisHeight);
 		ya.resizeRelocate(yAxisX, top, yAxisWidth, yAxisHeight);
 		y2a.resizeRelocate(width - y2AxisWidth, top, y2AxisWidth, y2AxisHeight);
 
