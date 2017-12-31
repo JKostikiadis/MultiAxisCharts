@@ -8,7 +8,7 @@ MultiAxisCharts library is an extension of the JavaFX available charts . All the
 Available Chart:
   - MultiAxisScatterChart
   - MultiAxisLineChart
-  - MultiAxisAreaChart
+  - MultiAxisAreaChart 
   - MultiAxisBarChart
   
 ### Usage
