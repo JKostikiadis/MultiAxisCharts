@@ -66,8 +66,6 @@ chart.getData().addAll(series1, series2);
 License
 ----
 
-## Licence
--------
 [GNU GENERAL PUBLIC LICENSE](LICENSE)
 
 
