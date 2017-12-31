@@ -63,6 +63,9 @@ chart.getData().addAll(series1, series2);
  - Refactor the regression process ( linear & polynomial )
  - Add more functionalities
 
+License
+----
+
 ## Licence
 -------
 [GNU GENERAL PUBLIC LICENSE](LICENSE)
