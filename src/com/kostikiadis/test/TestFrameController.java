@@ -167,7 +167,6 @@ public class TestFrameController {
 			chart = new MultiAxisAreaChart(xAxis, y1Axis, y2Axis);
 		}
 
-		chart.getStylesheets().add(this.getClass().getResource("style.css").toString());
 		chart.setTitle("Force, Power/Load");
 		chart.getData().addAll(series1, series2);
 
