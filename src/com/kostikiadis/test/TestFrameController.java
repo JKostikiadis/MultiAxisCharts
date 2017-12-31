@@ -1,6 +1,7 @@
 package com.kostikiadis.test;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -12,11 +13,14 @@ import javafx.scene.chart.MultiAxisChart;
 import javafx.scene.chart.MultiAxisLineChart;
 import javafx.scene.chart.MultiAxisScatterChart;
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.MultiAxisChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
 
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class TestFrameController {
 
 	public static final int SCATTER_CHART = 0;
@@ -39,18 +43,33 @@ public class TestFrameController {
 	private CheckBox secondAxisCheckBox;
 
 	@FXML
-	private CheckBox backgroundGridCheckBox;
-
-	@FXML
 	private ComboBox<String> y1RegressionComboBox;
 
 	@FXML
 	private ComboBox<String> y2RegressionComboBox;
 
+	@FXML
+	private Button titleFontButton;
+
+	@FXML
+	private Button xAxisFontButton;
+
+	@FXML
+	private Button xAxisTickMarkFontButton;
+
+	@FXML
+	private Button yAxisFontButton;
+
+	@FXML
+	private Button yAxisTickMarkFontButton;
+
+	@FXML
+	private Button legendFontButton;
+
 	private int chartType;
 	private int xAxisType;
 	private boolean hasSecondAxis = true;
-	private boolean hasBackgroundGrid = true;
+	private MultiAxisChart chart = null;
 
 	@FXML
 	public void initialize() {
@@ -77,9 +96,53 @@ public class TestFrameController {
 			updateChart();
 		});
 
-		backgroundGridCheckBox.setOnAction(e -> {
-			hasBackgroundGrid = backgroundGridCheckBox.isSelected();
-			updateChart();
+		titleFontButton.setOnAction(e -> {
+			Optional<Font> result = new FontDialog(Font.font("Times New Roman", FontPosture.ITALIC, 24)).showAndWait();
+			result.ifPresent(usernamePassword -> {
+				Font f = result.get();
+				titleFontButton.setText(f.getFamily() + "," + f.getStyle() + "," + f.getSize());
+				
+			});
+		});
+
+		xAxisFontButton.setOnAction(e -> {
+			Optional<Font> result = new FontDialog(Font.font("Times New Roman", FontPosture.ITALIC, 24)).showAndWait();
+			result.ifPresent(usernamePassword -> {
+				Font f = result.get();
+				xAxisFontButton.setText(f.getFamily() + "," + f.getStyle() + "," + f.getSize());
+			});
+		});
+
+		xAxisTickMarkFontButton.setOnAction(e -> {
+			Optional<Font> result = new FontDialog(Font.font("Times New Roman", FontPosture.ITALIC, 24)).showAndWait();
+			result.ifPresent(usernamePassword -> {
+				Font f = result.get();
+				xAxisTickMarkFontButton.setText(f.getFamily() + "," + f.getStyle() + "," + f.getSize());
+			});
+		});
+
+		yAxisFontButton.setOnAction(e -> {
+			Optional<Font> result = new FontDialog(Font.font("Times New Roman", FontPosture.ITALIC, 24)).showAndWait();
+			result.ifPresent(usernamePassword -> {
+				Font f = result.get();
+				yAxisFontButton.setText(f.getFamily() + "," + f.getStyle() + "," + f.getSize());
+			});
+		});
+
+		yAxisTickMarkFontButton.setOnAction(e -> {
+			Optional<Font> result = new FontDialog(Font.font("Times New Roman", FontPosture.ITALIC, 24)).showAndWait();
+			result.ifPresent(usernamePassword -> {
+				Font f = result.get();
+				yAxisTickMarkFontButton.setText(f.getFamily() + "," + f.getStyle() + "," + f.getSize());
+			});
+		});
+
+		legendFontButton.setOnAction(e -> {
+			Optional<Font> result = new FontDialog(Font.font("Times New Roman", FontPosture.ITALIC, 24)).showAndWait();
+			result.ifPresent(usernamePassword -> {
+				Font f = result.get();
+				legendFontButton.setText(f.getFamily() + "," + f.getStyle() + "," + f.getSize());
+			});
 		});
 
 		xAxisTypeComboBox.getSelectionModel().select(0);
@@ -87,10 +150,10 @@ public class TestFrameController {
 		updateChart();
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	
 	private void updateChart() {
 
-		MultiAxisChart chart = null;
+		
 		Axis<?> xAxis = null;
 		NumberAxis y1Axis = null;
 		NumberAxis y2Axis = null;
@@ -100,9 +163,8 @@ public class TestFrameController {
 
 		y2Axis = new NumberAxis();
 		y2Axis.setLabel("Speed");
-		
+
 		y2Axis.setVisible(hasSecondAxis);
-		
 
 		MultiAxisChart.Series series1 = new MultiAxisChart.Series();
 		series1.setName("April");

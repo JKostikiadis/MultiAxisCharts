@@ -86,7 +86,7 @@ public class MultiAxisBarChart<X, Y> extends MultiAxisChart<X, Y> {
 		@Override
 		protected void invalidated() {
 			get();
-			requestChartLayout();
+			layout();
 		}
 
 		public Object getBean() {
@@ -119,7 +119,7 @@ public class MultiAxisBarChart<X, Y> extends MultiAxisChart<X, Y> {
 		@Override
 		protected void invalidated() {
 			get();
-			requestChartLayout();
+			layout();
 		}
 
 		@Override
