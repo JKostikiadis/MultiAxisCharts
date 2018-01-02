@@ -1,5 +1,6 @@
 package javafx.scene.chart;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.sun.javafx.charts.Legend;
@@ -13,6 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.AccessibleRole;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
 @SuppressWarnings("restriction")
@@ -55,6 +57,7 @@ public class MultiAxisScatterChart<X, Y> extends MultiAxisChart<X, Y> {
 
 	// -------------- METHODS ----------------------------------------------
 
+
 	/** @inheritDoc */
 	@Override
 	protected void dataItemAdded(MultiAxisChart.Series<X, Y> series, int itemIndex, Data<X, Y> item) {
@@ -80,6 +83,7 @@ public class MultiAxisScatterChart<X, Y> extends MultiAxisChart<X, Y> {
 		} else {
 			getPlotChildren().add(symbol);
 		}
+
 	}
 
 	/** @inheritDoc */
@@ -171,7 +175,8 @@ public class MultiAxisScatterChart<X, Y> extends MultiAxisChart<X, Y> {
 							continue;
 						}
 					} else {
-						throw new NullPointerException("Data found with Y2_Axis as Y axis while Y2 axis is not defined.");
+						throw new NullPointerException(
+								"Data found with Y2_Axis as Y axis while Y2 axis is not defined.");
 					}
 				}
 
@@ -186,6 +191,9 @@ public class MultiAxisScatterChart<X, Y> extends MultiAxisChart<X, Y> {
 				}
 			}
 		}
+
+	
+
 	}
 
 	/**
@@ -213,5 +221,4 @@ public class MultiAxisScatterChart<X, Y> extends MultiAxisChart<X, Y> {
 			setLegend(null);
 		}
 	}
-
 }

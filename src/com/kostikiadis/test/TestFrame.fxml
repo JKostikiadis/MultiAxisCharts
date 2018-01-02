@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <SplitPane dividerPositions="0.6573033707865169" prefHeight="789.0" prefWidth="1248.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kostikiadis.test.TestFrameController">
@@ -19,125 +19,178 @@
       <BorderPane fx:id="chartPane" prefHeight="664.0" prefWidth="519.0" />
       <ScrollPane minWidth="427.0">
          <content>
-            <FlowPane alignment="TOP_CENTER" minHeight="720.0" minWidth="427.0" prefHeight="720.0" prefWidth="427.0">
+            <VBox spacing="15.0">
                <children>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="733.0" prefWidth="448.0">
+                  <Label text="Data">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <GridPane hgap="10.0" prefHeight="288.0" prefWidth="258.0" vgap="10.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
                      <children>
-                        <GridPane layoutX="77.0" layoutY="65.0" prefHeight="272.0" prefWidth="339.0">
-                          <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                          </rowConstraints>
-                           <children>
-                              <Label prefHeight="84.0" prefWidth="208.0" text="Chart Type ">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                              <ComboBox fx:id="chartTypeComboBox" prefHeight="28.0" prefWidth="156.0" GridPane.columnIndex="1" />
-                              <Label prefHeight="84.0" prefWidth="208.0" text="Second Y-Axis" GridPane.rowIndex="2">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                              <Label prefHeight="84.0" prefWidth="208.0" text="X-Axis Type" GridPane.rowIndex="1">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                              <Label prefHeight="84.0" prefWidth="208.0" text="First Y Regression" GridPane.rowIndex="3">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                              <Label prefHeight="84.0" prefWidth="208.0" text="Second Y  Regression" GridPane.rowIndex="4">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                              <CheckBox fx:id="secondAxisCheckBox" mnemonicParsing="false" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </CheckBox>
-                              <ComboBox prefHeight="28.0" prefWidth="156.0" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="xAxisTypeComboBox" />
-                              <ComboBox fx:id="y2RegressionComboBox" prefHeight="28.0" prefWidth="156.0" promptText="NONE" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <ComboBox fx:id="y1RegressionComboBox" prefHeight="28.0" prefWidth="156.0" promptText="NONE" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                           </children>
-                        </GridPane>
-                        <Label layoutX="25.0" layoutY="34.0" text="Basic Properties">
+                        <Label alignment="CENTER" prefHeight="108.0" prefWidth="340.0" text="X" textAlignment="CENTER">
                            <font>
-                              <Font name="System Bold" size="14.0" />
+                              <Font name="System Bold" size="20.0" />
                            </font>
                         </Label>
-                        <Label layoutX="25.0" layoutY="377.0" text="Appearence Properties">
+                        <Label alignment="CENTER" prefHeight="108.0" prefWidth="340.0" text="Y" textAlignment="CENTER" GridPane.columnIndex="1">
                            <font>
-                              <Font name="System Bold" size="14.0" />
+                              <Font name="System Bold" size="20.0" />
                            </font>
                         </Label>
-                        <GridPane layoutX="75.0" layoutY="422.0" prefHeight="268.0" prefWidth="339.0">
-                          <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                          </rowConstraints>
-                           <children>
-                              <Label prefHeight="84.0" prefWidth="208.0" text="Title Font">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                              <Label prefHeight="84.0" prefWidth="208.0" text="X-Axis Font" GridPane.rowIndex="1">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                              <Label prefHeight="84.0" prefWidth="208.0" text="X-TickMarks Font" GridPane.rowIndex="2">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                              <Label prefHeight="84.0" prefWidth="208.0" text="Legend Font" GridPane.rowIndex="5">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                              <Label prefHeight="84.0" prefWidth="208.0" text="Y-Axis Font" GridPane.rowIndex="3">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                              <Label prefHeight="84.0" prefWidth="208.0" text="Y-TickMarks Font" GridPane.rowIndex="4">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                              <Button fx:id="titleFontButton" mnemonicParsing="false" prefHeight="28.0" prefWidth="156.0" text="NONE" GridPane.columnIndex="1" />
-                              <Button mnemonicParsing="false" prefHeight="28.0" prefWidth="156.0" text="NONE" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="xAxisFontButton" />
-                              <Button mnemonicParsing="false" prefHeight="28.0" prefWidth="156.0" text="NONE" GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="xAxisTickMarkFontButton" />
-                              <Button fx:id="yAxisFontButton" mnemonicParsing="false" prefHeight="28.0" prefWidth="156.0" text="NONE" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <Button fx:id="yAxisTickMarkFontButton" mnemonicParsing="false" prefHeight="28.0" prefWidth="156.0" text="NONE" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <Button fx:id="legendFontButton" mnemonicParsing="false" prefHeight="28.0" prefWidth="156.0" text="NONE" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                           </children>
-                        </GridPane>
+                        <TextField alignment="CENTER" prefHeight="41.0" prefWidth="143.0" promptText="0.0" text="1" GridPane.rowIndex="1" fx:id="xField1">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="yField1" alignment="CENTER" prefHeight="41.0" prefWidth="143.0" promptText="0.0" text="2" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <TextField alignment="CENTER" prefHeight="41.0" prefWidth="143.0" promptText="0.0" text="2" GridPane.rowIndex="2" fx:id="xField2">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="yField2" alignment="CENTER" prefHeight="41.0" prefWidth="143.0" promptText="0.0" text="4" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <TextField alignment="CENTER" prefHeight="41.0" prefWidth="143.0" promptText="0.0" text="3" GridPane.rowIndex="3" fx:id="xField3">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="yField3" alignment="CENTER" prefHeight="41.0" prefWidth="143.0" promptText="0.0" text="6" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <TextField alignment="CENTER" prefHeight="41.0" prefWidth="143.0" promptText="0.0" text="4" GridPane.rowIndex="4" fx:id="xField4">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="yField4" alignment="CENTER" prefHeight="41.0" prefWidth="143.0" promptText="0.0" text="8" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <TextField alignment="CENTER" prefHeight="41.0" prefWidth="143.0" promptText="0.0" text="5" GridPane.rowIndex="5" fx:id="xField5">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="yField5" alignment="CENTER" prefHeight="41.0" prefWidth="143.0" promptText="0.0" text="10" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
                      </children>
-                  </AnchorPane>
+                  </GridPane>
+                  <Label text="Basic Properties">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <GridPane prefHeight="272.0" prefWidth="339.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label prefHeight="84.0" prefWidth="208.0" text="Chart Type ">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <ComboBox fx:id="chartTypeComboBox" prefHeight="28.0" prefWidth="156.0" GridPane.columnIndex="1" />
+                        <Label prefHeight="84.0" prefWidth="208.0" text="Second Y-Axis" GridPane.rowIndex="2">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="84.0" prefWidth="208.0" text="X-Axis Type" GridPane.rowIndex="1">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="84.0" prefWidth="208.0" text="First Y Regression" GridPane.rowIndex="3">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="84.0" prefWidth="208.0" text="Second Y  Regression" GridPane.rowIndex="4">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <CheckBox fx:id="secondAxisCheckBox" mnemonicParsing="false" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </CheckBox>
+                        <ComboBox prefHeight="28.0" prefWidth="156.0" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="xAxisTypeComboBox" />
+                        <ComboBox fx:id="y2RegressionComboBox" prefHeight="28.0" prefWidth="156.0" promptText="NONE" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <ComboBox fx:id="y1RegressionComboBox" prefHeight="28.0" prefWidth="156.0" promptText="NONE" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                     </children>
+                  </GridPane>
                </children>
-            </FlowPane>
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+            </VBox>
          </content>
       </ScrollPane>
   </items>

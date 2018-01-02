@@ -12,7 +12,6 @@ import java.util.Set;
 
 import com.sun.javafx.collections.NonIterableChange;
 
-import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.beans.binding.StringBinding;
@@ -33,9 +32,8 @@ import javafx.css.StyleableBooleanProperty;
 import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.chart.XYChart.Data;
-import javafx.scene.chart.XYChart.Series;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.LineTo;
@@ -51,6 +49,25 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 
 	public static final int Y1_AXIS = 0;
 	public static final int Y2_AXIS = 1;
+
+	public static final int NONE = 0;
+	public static final int LINEAR_REGRESSION = 1;
+	public static final int POLYNOMIAL_REGRESSION = 2;
+
+	private boolean hasY1AxisRegression;
+	private boolean hasY2AxisRegression;
+
+	private int y1AxisRegressionType;
+	private int y2AxisRegressionType;
+
+	public String y1RegressionSeriesColors[] = { "#f3622d", "#fba71b", "#57b757", "#41a9c9", "#4258c9", "#9a42c8",
+			"#c84164", "#888888" };
+
+	public String y2RegressionSeriesColors[] = { "#f3622d", "#fba71b", "#57b757", "#41a9c9", "#4258c9", "#9a42c8",
+			"#c84164", "#888888" };
+
+	private ArrayList<Line> y1RegressionLines = new ArrayList<>();
+	private ArrayList<Line> y2RegressionLines = new ArrayList<>();
 
 	// to indicate which colors are being used for the series
 	private final BitSet colorBits = new BitSet(8);
@@ -462,38 +479,37 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 		return horizontalZeroLineVisible;
 	}
 
-	
 	/**
-     * Creates an array of KeyFrames for fading out nodes representing a series
-     *
-     * @param series The series to remove
-     * @param fadeOutTime Time to fade out, in milliseconds
-     * @return array of two KeyFrames from zero to fadeOutTime
-     */
-    final KeyFrame[] createSeriesRemoveTimeLine(Series<X, Y> series, long fadeOutTime) {
-        final List<Node> nodes = new ArrayList<>();
-        nodes.add(series.getNode());
-        for (Data<X, Y> d : series.getData()) {
-            if (d.getNode() != null) {
-                nodes.add(d.getNode());
-            }
-        }
-        // fade out series node and symbols
-        KeyValue[] startValues = new KeyValue[nodes.size()];
-        KeyValue[] endValues = new KeyValue[nodes.size()];
-        for (int j = 0; j < nodes.size(); j++) {
-            startValues[j] = new KeyValue(nodes.get(j).opacityProperty(), 1);
-            endValues[j] = new KeyValue(nodes.get(j).opacityProperty(), 0);
-        }
-        return new KeyFrame[] {
-            new KeyFrame(Duration.ZERO, startValues),
-            new KeyFrame(Duration.millis(fadeOutTime), actionEvent -> {
-                getPlotChildren().removeAll(nodes);
-                removeSeriesFromDisplay(series);
-            }, endValues)
-        };
-    }
-	
+	 * Creates an array of KeyFrames for fading out nodes representing a series
+	 *
+	 * @param series
+	 *            The series to remove
+	 * @param fadeOutTime
+	 *            Time to fade out, in milliseconds
+	 * @return array of two KeyFrames from zero to fadeOutTime
+	 */
+	final KeyFrame[] createSeriesRemoveTimeLine(Series<X, Y> series, long fadeOutTime) {
+		final List<Node> nodes = new ArrayList<>();
+		nodes.add(series.getNode());
+		for (Data<X, Y> d : series.getData()) {
+			if (d.getNode() != null) {
+				nodes.add(d.getNode());
+			}
+		}
+		// fade out series node and symbols
+		KeyValue[] startValues = new KeyValue[nodes.size()];
+		KeyValue[] endValues = new KeyValue[nodes.size()];
+		for (int j = 0; j < nodes.size(); j++) {
+			startValues[j] = new KeyValue(nodes.get(j).opacityProperty(), 1);
+			endValues[j] = new KeyValue(nodes.get(j).opacityProperty(), 0);
+		}
+		return new KeyFrame[] { new KeyFrame(Duration.ZERO, startValues),
+				new KeyFrame(Duration.millis(fadeOutTime), actionEvent -> {
+					getPlotChildren().removeAll(nodes);
+					removeSeriesFromDisplay(series);
+				}, endValues) };
+	}
+
 	// -------------- PROTECTED PROPERTIES ------------------------
 
 	/**
@@ -531,12 +547,19 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 			y1Axis.setSide(Side.LEFT);
 
 		this.y2Axis = y2Axis;
-		if (y2Axis.getSide() == null)
+		if (y2Axis != null && y2Axis.getSide() == null)
 			y2Axis.setSide(Side.RIGHT);
 
-		y2Axis.visibleProperty().addListener(e -> {
-			layoutPlotChildren();
-		});
+		if (y2Axis != null) {
+			y2Axis.visibleProperty().addListener(e -> {
+				layoutPlotChildren();
+			});
+
+			y2Axis.autoRangingProperty().addListener((ov, t, t1) -> {
+				updateAxisRange();
+			});
+			getChartChildren().add(y2Axis);
+		}
 
 		// RT-23123 autoranging leads to charts incorrect appearance.
 		xAxis.autoRangingProperty().addListener((ov, t, t1) -> {
@@ -547,11 +570,8 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 			updateAxisRange();
 		});
 
-		y2Axis.autoRangingProperty().addListener((ov, t, t1) -> {
-			updateAxisRange();
-		});
 		// add initial content to chart content
-		getChartChildren().addAll(plotBackground, plotArea, xAxis, y1Axis, y2Axis);
+		getChartChildren().addAll(plotBackground, plotArea, xAxis, y1Axis);
 		// We don't want plotArea or plotContent to autoSize or do layout
 		plotArea.setAutoSizeChildren(false);
 		plotContent.setAutoSizeChildren(false);
@@ -608,7 +628,7 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 	 *
 	 * @return The number of items in data, or null if data is null
 	 */
-	final int getDataSize() {
+	public final int getDataSize() {
 		final ObservableList<MultiAxisChart.Series<X, Y>> data = getData();
 		return (data != null) ? data.size() : 0;
 	}
@@ -633,45 +653,34 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 	}
 
 	private void dataXValueChanged(Data<X, Y> item) {
-		if (item.getCurrentX() != item.getXValue())
+		if (item.getCurrentX() != item.getXValue()) {
 			invalidateRange();
-		dataItemChanged(item);
-		if (shouldAnimate()) {
-			animate(new KeyFrame(Duration.ZERO, new KeyValue(item.currentXProperty(), item.getCurrentX())),
-					new KeyFrame(Duration.millis(700),
-							new KeyValue(item.currentXProperty(), item.getXValue(), Interpolator.EASE_BOTH)));
-		} else {
-			item.setCurrentX(item.getXValue());
-			requestChartLayout();
 		}
+		dataItemChanged(item);
+
+		item.setCurrentX(item.getXValue());
+		requestChartLayout();
+
 	}
 
 	private void dataYValueChanged(Data<X, Y> item) {
 		if (item.getCurrentY() != item.getYValue())
 			invalidateRange();
 		dataItemChanged(item);
-		if (shouldAnimate()) {
-			animate(new KeyFrame(Duration.ZERO, new KeyValue(item.currentYProperty(), item.getCurrentY())),
-					new KeyFrame(Duration.millis(700),
-							new KeyValue(item.currentYProperty(), item.getYValue(), Interpolator.EASE_BOTH)));
-		} else {
-			item.setCurrentY(item.getYValue());
-			requestChartLayout();
-		}
+
+		item.setCurrentY(item.getYValue());
+		requestChartLayout();
+
 	}
 
 	private void dataExtraValueChanged(Data<X, Y> item) {
 		if (item.getCurrentY() != item.getYValue())
 			invalidateRange();
 		dataItemChanged(item);
-		if (shouldAnimate()) {
-			animate(new KeyFrame(Duration.ZERO, new KeyValue(item.currentYProperty(), item.getCurrentY())),
-					new KeyFrame(Duration.millis(700),
-							new KeyValue(item.currentYProperty(), item.getYValue(), Interpolator.EASE_BOTH)));
-		} else {
-			item.setCurrentY(item.getYValue());
-			requestChartLayout();
-		}
+
+		item.setCurrentY(item.getYValue());
+		requestChartLayout();
+
 	}
 
 	/**
@@ -773,7 +782,7 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 	/**
 	 * Called when each atomic change is made to the list of series for this chart
 	 */
-	protected void seriesChanged(Change<? extends MultiAxisChart.Series<X,Y>> c) {
+	protected void seriesChanged(Change<? extends MultiAxisChart.Series<X, Y>> c) {
 	}
 
 	/**
@@ -871,7 +880,8 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 			if (y2AxisHeight < 0) {
 				y2AxisHeight = 0;
 			}
-			y2AxisWidth = y2a.prefWidth(y2AxisHeight);
+			if (y2a != null)
+				y2AxisWidth = y2a.prefWidth(y2AxisHeight);
 
 			xAxisWidth = snapSize(width - yAxisWidth - y2AxisWidth);
 			if (xAxisWidth < 0) {
@@ -890,7 +900,7 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 		yAxisHeight = Math.ceil(yAxisHeight);
 		y2AxisWidth = Math.ceil(y2AxisWidth);
 		y2AxisHeight = Math.ceil(y2AxisHeight);
-		
+
 		// calc xAxis height
 		double xAxisY = 0;
 		xa.setVisible(true);
@@ -901,14 +911,15 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 		ya.setVisible(true);
 		yAxisX = left + 1;
 		left += yAxisWidth;
-		
-		xAxisWidth = width - y2AxisWidth-left;
+
+		xAxisWidth = width - y2AxisWidth - left;
 
 		// TODO : Check again the approach below
 		// resize axises
 		xa.resizeRelocate(left, xAxisY, xAxisWidth, xAxisHeight);
 		ya.resizeRelocate(yAxisX, top, yAxisWidth, yAxisHeight);
-		y2a.resizeRelocate(width - y2AxisWidth, top, y2AxisWidth, y2AxisHeight);
+		if (y2a != null)
+			y2a.resizeRelocate(width - y2AxisWidth, top, y2AxisWidth, y2AxisHeight);
 
 		// When the chart is resized, need to specifically call out the axises
 		// to lay out as they are unmanaged.
@@ -916,8 +927,10 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 		xa.layout();
 		ya.requestAxisLayout();
 		ya.layout();
-		y2a.requestAxisLayout();
-		y2a.layout();
+		if (y2a != null) {
+			y2a.requestAxisLayout();
+			y2a.layout();
+		}
 
 		// layout plot content
 		layoutPlotChildren();
@@ -1061,28 +1074,249 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 				}
 			}
 		}
+
+		drawRegressions();
+	}
+
+	private Line initRegressionLine(Line l, Axis<?> yAxis) {
+		if (l == null) {
+			return null;
+		}
+
+		double x1, x2, y1, y2;
+
+		if (getXAxis() instanceof NumberAxis) {
+			x1 = ((NumberAxis) getXAxis()).getDisplayPosition(l.getStartX());
+			x2 = ((NumberAxis) getXAxis()).getDisplayPosition(l.getEndX());
+		} else {
+			x1 = ((CategoryAxis) getXAxis())
+					.getDisplayPosition(((CategoryAxis) getXAxis()).getCategories().get((int) l.getStartX()));
+			x2 = ((CategoryAxis) getXAxis())
+					.getDisplayPosition(((CategoryAxis) getXAxis()).getCategories().get((int) l.getEndX()));
+		}
+
+		y1 = ((NumberAxis) yAxis).getDisplayPosition(l.getStartY());
+		y2 = ((NumberAxis) yAxis).getDisplayPosition(l.getEndY());
+
+		Line y1RegressionLine = new Line(x1, y1, x2, y2);
+		return y1RegressionLine;
+
+	}
+
+	private void drawRegressions() {
+
+		getPlotChildren().removeAll(y1RegressionLines);
+		getPlotChildren().removeAll(y2RegressionLines);
+
+		y1RegressionLines.clear();
+		y2RegressionLines.clear();
+
+		if (hasY1AxisRegression) {
+			ObservableList<MultiAxisChart.Series<X, Y>> series = getData();
+			for (MultiAxisChart.Series<X, Y> s : series) {
+				Line l = null;
+				if (y1AxisRegressionType == MultiAxisChart.LINEAR_REGRESSION) {
+					l = calcLinearRegression(s, MultiAxisChart.Y1_AXIS);
+					Line seriesRegressionLine = initRegressionLine(l, getY1Axis());
+
+					if (seriesRegressionLine != null) {
+						y1RegressionLines.add(seriesRegressionLine);
+					}
+				} else {
+					// TODO : call for polynomial regression
+				}
+			}
+		} else if (hasY2AxisRegression) {
+			ObservableList<MultiAxisChart.Series<X, Y>> series = getData();
+			for (MultiAxisChart.Series<X, Y> s : series) {
+				Line l = null;
+				if (y2AxisRegressionType == MultiAxisChart.LINEAR_REGRESSION) {
+					l = calcLinearRegression(s, MultiAxisChart.Y2_AXIS);
+					Line seriesRegressionLine = initRegressionLine(l, getY2Axis());
+
+					if (seriesRegressionLine != null) {
+						y2RegressionLines.add(seriesRegressionLine);
+					}
+				} else {
+					// TODO : call for polynomial regression
+				}
+			}
+		}
+
+		int index = 0;
+		for (Line l : y1RegressionLines) {
+			l.setStrokeWidth(2);
+			l.setStroke(Color.web(y1RegressionSeriesColors[index++]));
+			getPlotChildren().add(l);
+		}
+
+		index = 0;
+		for (Line l : y2RegressionLines) {
+			l.setStrokeWidth(2);
+			l.setStroke(Color.web(y2RegressionSeriesColors[index++]));
+			getPlotChildren().add(l);
+		}
+
+	}
+
+	public void setRegressionColor(int axisPos, int index, String webColor) {
+		if (axisPos == Y1_AXIS) {
+			y1RegressionSeriesColors[index] = webColor;
+		}else {
+			y2RegressionSeriesColors[index] = webColor;
+		}
+	}
+
+	private Line calcLinearRegression(Series<X, Y> s, int yAxisIndex) {
+
+		if (yAxisIndex == Y2_AXIS && y2Axis == null)
+			throw new NullPointerException("Y2 Axis is not defind.");
+
+		ArrayList<Point> regressionPoints = new ArrayList<>();
+
+		double index = 0;
+		for (Iterator<Data<X, Y>> it = getDisplayedDataIterator(s); it.hasNext();) {
+			Data<X, Y> item = it.next();
+
+			if ((yAxisIndex == Y1_AXIS && item.getExtraValue() == null) || (int) item.getExtraValue() == yAxisIndex) {
+				if (getXAxis() instanceof NumberAxis) {
+					regressionPoints.add(new MultiAxisChart.Point(item.getCurrentX(), item.getCurrentY()));
+				} else {
+					regressionPoints.add(new MultiAxisChart.Point(index++, item.getCurrentY()));
+				}
+			}
+		}
+
+		double xMean = 0;
+		double yMean = 0;
+
+		double xMax = Double.MIN_VALUE;
+		double xMin = Double.MAX_VALUE;
+
+		for (Point p : regressionPoints) {
+
+			double currentX = getValue(p.getX());
+			double currentY = getValue(p.getY());
+
+			xMean += currentX;
+			yMean += currentY;
+
+			if (currentX > xMax)
+				xMax = currentX;
+			if (currentX < xMin)
+				xMin = currentX;
+		}
+
+		xMean = xMean / regressionPoints.size();
+		yMean = yMean / regressionPoints.size();
+		// b1 is the slope
+		double b1 = 0;
+		double aSum = 0;
+		double bSum = 0;
+
+		for (Point p : regressionPoints) {
+
+			double currentX = getValue(p.getX());
+			double currentY = getValue(p.getY());
+
+			double xMeanDist = currentX - xMean;
+			double yMeanDist = currentY - yMean;
+
+			double xMeanPow = Math.pow(xMeanDist, 2);
+
+			aSum += xMeanPow;
+			bSum += (xMeanDist * yMeanDist);
+
+		}
+
+		b1 = bSum / aSum;
+		double y1 = b1 * xMin - b1 * xMean + yMean;
+		double y2 = b1 * xMax - b1 * xMean + yMean;
+
+		if (regressionPoints.size() < 2) {
+			return null;
+		} else {
+			return new Line(xMin, y1, xMax, y2);
+		}
+	}
+
+	private double getValue(Object x) {
+		try {
+			return (double) x;
+		} catch (Exception e) {
+			return (int) x;
+		}
+	}
+
+	public void setRegression(int yAxisIndex, int type) {
+		if (yAxisIndex == Y1_AXIS && type != NONE) {
+			hasY1AxisRegression = true;
+			y1AxisRegressionType = type;
+		} else if (yAxisIndex == Y2_AXIS && type != NONE) {
+			hasY2AxisRegression = true;
+			y2AxisRegressionType = type;
+		} else if (yAxisIndex == Y1_AXIS && type == NONE) {
+			hasY1AxisRegression = false;
+			y1AxisRegressionType = NONE;
+			getPlotChildren().removeAll(y1RegressionLines);
+			y1RegressionLines.clear();
+		} else if (yAxisIndex == Y2_AXIS && type == NONE) {
+			hasY2AxisRegression = false;
+			y2AxisRegressionType = NONE;
+			getPlotChildren().removeAll(y2RegressionLines);
+			y2RegressionLines.clear();
+		}
 	}
 
 	/**
-     * Computes the size of series linked list
-     * @return size of series linked list
-     */
-    int getSeriesSize() {
-        return displayedSeries.size();
-    }
-	
-    /**
-     * XYChart maintains a list of all series currently displayed this includes all current series + any series that
-     * have recently been deleted that are in the process of being faded(animated) out. This creates and returns a
-     * iterator over that list. This is what implementations of XYChart should use when plotting data.
-     *
-     * @return iterator over currently displayed series
-     */
-    protected final Iterator<Series<X,Y>> getDisplayedSeriesIterator() {
-        return Collections.unmodifiableList(displayedSeries).iterator();
-    }
-    
+	 * Computes the size of series linked list
+	 * 
+	 * @return size of series linked list
+	 */
+	int getSeriesSize() {
+		return displayedSeries.size();
+	}
+
+	/**
+	 * XYChart maintains a list of all series currently displayed this includes all
+	 * current series + any series that have recently been deleted that are in the
+	 * process of being faded(animated) out. This creates and returns a iterator
+	 * over that list. This is what implementations of XYChart should use when
+	 * plotting data.
+	 *
+	 * @return iterator over currently displayed series
+	 */
+	protected final Iterator<Series<X, Y>> getDisplayedSeriesIterator() {
+		return Collections.unmodifiableList(displayedSeries).iterator();
+	}
+
 	// -------------- INNER CLASSES -------------------------------------
+
+	private class Point {
+		X x;
+		Y y;
+
+		public Point(X x, Y y) {
+			this.x = x;
+			this.y = y;
+		}
+
+		public X getX() {
+			return x;
+		}
+
+		public void setX(X x) {
+			this.x = x;
+		}
+
+		public Y getY() {
+			return y;
+		}
+
+		public void setY(Y y) {
+			this.y = y;
+		}
+	}
 
 	/**
 	 * A single data item with data for 2 axis charts

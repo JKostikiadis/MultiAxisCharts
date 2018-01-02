@@ -48,26 +48,9 @@ public class TestFrameController {
 	@FXML
 	private ComboBox<String> y2RegressionComboBox;
 
-	@FXML
-	private Button titleFontButton;
-
-	@FXML
-	private Button xAxisFontButton;
-
-	@FXML
-	private Button xAxisTickMarkFontButton;
-
-	@FXML
-	private Button yAxisFontButton;
-
-	@FXML
-	private Button yAxisTickMarkFontButton;
-
-	@FXML
-	private Button legendFontButton;
 
 	private int chartType;
-	private int xAxisType;
+	private int xAxisType = 0;
 	private boolean hasSecondAxis = true;
 	private MultiAxisChart chart = null;
 
@@ -96,64 +79,14 @@ public class TestFrameController {
 			updateChart();
 		});
 
-		titleFontButton.setOnAction(e -> {
-			Optional<Font> result = new FontDialog(Font.font("Times New Roman", FontPosture.ITALIC, 24)).showAndWait();
-			result.ifPresent(usernamePassword -> {
-				Font f = result.get();
-				titleFontButton.setText(f.getFamily() + "," + f.getStyle() + "," + f.getSize());
-				
-			});
-		});
-
-		xAxisFontButton.setOnAction(e -> {
-			Optional<Font> result = new FontDialog(Font.font("Times New Roman", FontPosture.ITALIC, 24)).showAndWait();
-			result.ifPresent(usernamePassword -> {
-				Font f = result.get();
-				xAxisFontButton.setText(f.getFamily() + "," + f.getStyle() + "," + f.getSize());
-			});
-		});
-
-		xAxisTickMarkFontButton.setOnAction(e -> {
-			Optional<Font> result = new FontDialog(Font.font("Times New Roman", FontPosture.ITALIC, 24)).showAndWait();
-			result.ifPresent(usernamePassword -> {
-				Font f = result.get();
-				xAxisTickMarkFontButton.setText(f.getFamily() + "," + f.getStyle() + "," + f.getSize());
-			});
-		});
-
-		yAxisFontButton.setOnAction(e -> {
-			Optional<Font> result = new FontDialog(Font.font("Times New Roman", FontPosture.ITALIC, 24)).showAndWait();
-			result.ifPresent(usernamePassword -> {
-				Font f = result.get();
-				yAxisFontButton.setText(f.getFamily() + "," + f.getStyle() + "," + f.getSize());
-			});
-		});
-
-		yAxisTickMarkFontButton.setOnAction(e -> {
-			Optional<Font> result = new FontDialog(Font.font("Times New Roman", FontPosture.ITALIC, 24)).showAndWait();
-			result.ifPresent(usernamePassword -> {
-				Font f = result.get();
-				yAxisTickMarkFontButton.setText(f.getFamily() + "," + f.getStyle() + "," + f.getSize());
-			});
-		});
-
-		legendFontButton.setOnAction(e -> {
-			Optional<Font> result = new FontDialog(Font.font("Times New Roman", FontPosture.ITALIC, 24)).showAndWait();
-			result.ifPresent(usernamePassword -> {
-				Font f = result.get();
-				legendFontButton.setText(f.getFamily() + "," + f.getStyle() + "," + f.getSize());
-			});
-		});
 
 		xAxisTypeComboBox.getSelectionModel().select(0);
 		chartTypeComboBox.getSelectionModel().select(0);
 		updateChart();
 	}
 
-	
 	private void updateChart() {
 
-		
 		Axis<?> xAxis = null;
 		NumberAxis y1Axis = null;
 		NumberAxis y2Axis = null;
@@ -178,44 +111,30 @@ public class TestFrameController {
 			((CategoryAxis) xAxis).setCategories(FXCollections.<String>observableArrayList(
 					Arrays.asList(new String[] { "Power", "Force", "Agility", "Balance", "Speed" })));
 
-			series1.getData().add(new MultiAxisChart.Data("Power", 4, MultiAxisChart.Y1_AXIS));
-			series1.getData().add(new MultiAxisChart.Data("Force", 10, MultiAxisChart.Y1_AXIS));
-			series1.getData().add(new MultiAxisChart.Data("Agility", 15, MultiAxisChart.Y1_AXIS));
-			series1.getData().add(new MultiAxisChart.Data("Balance", 8, MultiAxisChart.Y1_AXIS));
-			series1.getData().add(new MultiAxisChart.Data("Speed", 5, MultiAxisChart.Y1_AXIS));
-
-			series2.getData().add(new MultiAxisChart.Data("Power", 20, MultiAxisChart.Y2_AXIS));
-			series2.getData().add(new MultiAxisChart.Data("Force", 15, MultiAxisChart.Y2_AXIS));
-			series2.getData().add(new MultiAxisChart.Data("Agility", 13, MultiAxisChart.Y2_AXIS));
-			series2.getData().add(new MultiAxisChart.Data("Balance", 12, MultiAxisChart.Y2_AXIS));
-			series2.getData().add(new MultiAxisChart.Data("Speed", 14, MultiAxisChart.Y2_AXIS));
+			series1.getData().add(new MultiAxisChart.Data("Power", 4, MultiAxisChart.Y2_AXIS));
+			series1.getData().add(new MultiAxisChart.Data("Force", 17, MultiAxisChart.Y2_AXIS));
+			series1.getData().add(new MultiAxisChart.Data("Agility", 15, MultiAxisChart.Y2_AXIS));
+			series1.getData().add(new MultiAxisChart.Data("Balance", 8, MultiAxisChart.Y2_AXIS));
+			series1.getData().add(new MultiAxisChart.Data("Speed", 5, MultiAxisChart.Y2_AXIS));
+			
+			series2.getData().add(new MultiAxisChart.Data("Power", 18, MultiAxisChart.Y2_AXIS));
+			series2.getData().add(new MultiAxisChart.Data("Force", 22, MultiAxisChart.Y2_AXIS));
+			series2.getData().add(new MultiAxisChart.Data("Agility", 34, MultiAxisChart.Y2_AXIS));
+			series2.getData().add(new MultiAxisChart.Data("Balance", 32, MultiAxisChart.Y2_AXIS));
+			series2.getData().add(new MultiAxisChart.Data("Speed", 18, MultiAxisChart.Y2_AXIS));
 
 		} else {
 			xAxis = new NumberAxis();
 
-			series1.getData().add(new MultiAxisChart.Data(1, 4, MultiAxisChart.Y1_AXIS));
-			series1.getData().add(new MultiAxisChart.Data(3, 10, MultiAxisChart.Y1_AXIS));
-			series1.getData().add(new MultiAxisChart.Data(6, 15, MultiAxisChart.Y1_AXIS));
-			series1.getData().add(new MultiAxisChart.Data(9, 8, MultiAxisChart.Y1_AXIS));
-			series1.getData().add(new MultiAxisChart.Data(12, 5, MultiAxisChart.Y1_AXIS));
-			series1.getData().add(new MultiAxisChart.Data(15, 18, MultiAxisChart.Y1_AXIS));
-			series1.getData().add(new MultiAxisChart.Data(18, 15, MultiAxisChart.Y1_AXIS));
-			series1.getData().add(new MultiAxisChart.Data(21, 13, MultiAxisChart.Y1_AXIS));
-			series1.getData().add(new MultiAxisChart.Data(24, 19, MultiAxisChart.Y1_AXIS));
-			series1.getData().add(new MultiAxisChart.Data(27, 21, MultiAxisChart.Y1_AXIS));
-			series1.getData().add(new MultiAxisChart.Data(30, 21, MultiAxisChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data(100, 1889,MultiAxisScatterChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data(110, 1935,MultiAxisScatterChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data(120, 2337,MultiAxisScatterChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data(130, 2196,MultiAxisScatterChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data(140, 2398,MultiAxisScatterChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data(150, 2579,MultiAxisScatterChart.Y1_AXIS));
+			series1.getData().add(new MultiAxisChart.Data(160, 2601,MultiAxisScatterChart.Y1_AXIS));
 
-			series2.getData().add(new MultiAxisChart.Data(0, 20, MultiAxisChart.Y2_AXIS));
-			series2.getData().add(new MultiAxisChart.Data(3, 15, MultiAxisChart.Y2_AXIS));
-			series2.getData().add(new MultiAxisChart.Data(6, 13, MultiAxisChart.Y2_AXIS));
-			series2.getData().add(new MultiAxisChart.Data(9, 12, MultiAxisChart.Y2_AXIS));
-			series2.getData().add(new MultiAxisChart.Data(12, 14, MultiAxisChart.Y2_AXIS));
-			series2.getData().add(new MultiAxisChart.Data(15, 18, MultiAxisChart.Y2_AXIS));
-			series2.getData().add(new MultiAxisChart.Data(18, 25, MultiAxisChart.Y2_AXIS));
-			series2.getData().add(new MultiAxisChart.Data(21, 25, MultiAxisChart.Y2_AXIS));
-			series2.getData().add(new MultiAxisChart.Data(24, 23, MultiAxisChart.Y2_AXIS));
-			series2.getData().add(new MultiAxisChart.Data(27, 26, MultiAxisChart.Y2_AXIS));
-			series2.getData().add(new MultiAxisChart.Data(31, 26, MultiAxisChart.Y2_AXIS));
+
 		}
 		xAxis.setLabel("Load (kg)");
 
@@ -229,9 +148,12 @@ public class TestFrameController {
 			chart = new MultiAxisAreaChart(xAxis, y1Axis, y2Axis);
 		}
 
+		chart.getStylesheets().add(this.getClass().getResource("style.css").toExternalForm());
 		chart.setTitle("Force, Power/Load");
 		chart.getData().addAll(series1, series2);
-
+		chart.setRegression(MultiAxisChart.Y2_AXIS, MultiAxisChart.LINEAR_REGRESSION);
+		chart.setRegressionColor(MultiAxisScatterChart.Y2_AXIS, 0, "#001DFF");
+		
 		chartPane.getChildren().clear();
 		chartPane.setCenter(chart);
 	}
