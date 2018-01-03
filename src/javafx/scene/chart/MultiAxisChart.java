@@ -1258,7 +1258,7 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 		} else if (yAxisIndex == Y1_AXIS && type == NONE) {
 			hasY1AxisRegression = false;
 			y1AxisRegressionType = type;
-		} else if (yAxisIndex == Y1_AXIS && type != NONE) {
+		} else if (yAxisIndex == Y2_AXIS && type != NONE) {
 			hasY2AxisRegression = true;
 			y2AxisRegressionType = type;
 		} else {
