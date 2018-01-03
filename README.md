@@ -41,6 +41,8 @@ series2.getData().add(new MultiAxisChart.Data<Number, Number>(21, 600, MultiAxis
 chart.getData().addAll(series1, series2);
 ```
 
+![MultiAxisScatterChart ](./preview/ScatterChart.png)
+
 In order to show the Linear regression for each y axis you have to call :
 
 ```java
