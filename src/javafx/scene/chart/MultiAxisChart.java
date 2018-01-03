@@ -1126,7 +1126,9 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 					// TODO : call for polynomial regression
 				}
 			}
-		} else if (hasY2AxisRegression) {
+		}
+		
+		if (hasY2AxisRegression) {
 			ObservableList<MultiAxisChart.Series<X, Y>> series = getData();
 			for (MultiAxisChart.Series<X, Y> s : series) {
 				Line l = null;
@@ -1162,7 +1164,7 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 	public void setRegressionColor(int axisPos, int index, String webColor) {
 		if (axisPos == Y1_AXIS) {
 			y1RegressionSeriesColors[index] = webColor;
-		}else {
+		} else {
 			y2RegressionSeriesColors[index] = webColor;
 		}
 	}
@@ -1249,23 +1251,21 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 	}
 
 	public void setRegression(int yAxisIndex, int type) {
+
 		if (yAxisIndex == Y1_AXIS && type != NONE) {
 			hasY1AxisRegression = true;
 			y1AxisRegressionType = type;
-		} else if (yAxisIndex == Y2_AXIS && type != NONE) {
-			hasY2AxisRegression = true;
-			y2AxisRegressionType = type;
 		} else if (yAxisIndex == Y1_AXIS && type == NONE) {
 			hasY1AxisRegression = false;
-			y1AxisRegressionType = NONE;
-			getPlotChildren().removeAll(y1RegressionLines);
-			y1RegressionLines.clear();
-		} else if (yAxisIndex == Y2_AXIS && type == NONE) {
+			y1AxisRegressionType = type;
+		} else if (yAxisIndex == Y1_AXIS && type != NONE) {
+			hasY2AxisRegression = true;
+			y2AxisRegressionType = type;
+		} else {
 			hasY2AxisRegression = false;
-			y2AxisRegressionType = NONE;
-			getPlotChildren().removeAll(y2RegressionLines);
-			y2RegressionLines.clear();
+			y2AxisRegressionType = type;
 		}
+
 	}
 
 	/**
