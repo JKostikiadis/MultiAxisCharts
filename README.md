@@ -75,6 +75,7 @@ You can clone and build the entire project to create a jar library by yourself o
  - Refactoring the regression process ( linear ) if possible
  - Add polynomial regression 
  - Separate the series into two legends in order to show which one is on each axis
+ - Consider adding more complex charts (ex. combination of BarChart and LineChart )
  - Add more functionalities
 
 License
