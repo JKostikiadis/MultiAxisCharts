@@ -61,7 +61,7 @@ chart.setRegressionColor(MultiAxisChart.Y2_AXIS, 0, "#FBA71B");
 ```
 
 ### Installation
-
+ 
 You can clone and build the entire project to create a jar library by yourself or you can download the Pre-Build Jar file and load it to your build path for your projects.
 
 #### Pre-Build Jar 
