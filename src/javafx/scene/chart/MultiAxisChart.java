@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.kostikiadis.regression.PolynomialFitter;
+import com.kostikiadis.regression.PolynomialFitter.Polynomial;
 import com.sun.javafx.collections.NonIterableChange;
 
 import javafx.animation.KeyFrame;
@@ -40,6 +42,7 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 
 @SuppressWarnings("restriction")
@@ -51,8 +54,13 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 	public static final int Y2_AXIS = 1;
 
 	public static final int NONE = 0;
-	public static final int LINEAR_REGRESSION = 1;
-	public static final int POLYNOMIAL_REGRESSION = 2;
+	public static final int DEGREE_NUM1 = 1;
+	public static final int DEGREE_NUM2 = 2;
+	public static final int DEGREE_NUM3 = 2;
+	public static final int DEGREE_NUM4 = 2;
+	public static final int DEGREE_NUM5 = 2;
+	public static final int DEGREE_NUM6 = 2;
+	public static final int DEGREE_NUM7 = 2;
 
 	private boolean hasY1AxisRegression;
 	private boolean hasY2AxisRegression;
@@ -62,12 +70,11 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 
 	public String y1RegressionSeriesColors[] = { "#f3622d", "#fba71b", "#57b757", "#41a9c9", "#4258c9", "#9a42c8",
 			"#c84164", "#888888" };
-
 	public String y2RegressionSeriesColors[] = { "#f3622d", "#fba71b", "#57b757", "#41a9c9", "#4258c9", "#9a42c8",
 			"#c84164", "#888888" };
 
-	private ArrayList<Line> y1RegressionLines = new ArrayList<>();
-	private ArrayList<Line> y2RegressionLines = new ArrayList<>();
+	private ArrayList<Shape> y1RegressionLines = new ArrayList<>();
+	private ArrayList<Shape> y2RegressionLines = new ArrayList<>();
 
 	// to indicate which colors are being used for the series
 	private final BitSet colorBits = new BitSet(8);
@@ -1078,7 +1085,7 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 		drawRegressions();
 	}
 
-	private Line initRegressionLine(Line l, Axis<?> yAxis) {
+	private Line initLinearRegressionLine(Line l, Axis<?> yAxis) {
 		if (l == null) {
 			return null;
 		}
@@ -1114,51 +1121,123 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 		if (hasY1AxisRegression) {
 			ObservableList<MultiAxisChart.Series<X, Y>> series = getData();
 			for (MultiAxisChart.Series<X, Y> s : series) {
-				Line l = null;
-				if (y1AxisRegressionType == MultiAxisChart.LINEAR_REGRESSION) {
-					l = calcLinearRegression(s, MultiAxisChart.Y1_AXIS);
-					Line seriesRegressionLine = initRegressionLine(l, getY1Axis());
+				Path p = calcQuadraticRegression(s, MultiAxisChart.Y1_AXIS, y1AxisRegressionType);
 
-					if (seriesRegressionLine != null) {
-						y1RegressionLines.add(seriesRegressionLine);
-					}
-				} else {
-					// TODO : call for polynomial regression
+				if (p != null) {
+					y1RegressionLines.add(p);
 				}
 			}
 		}
-		
+
 		if (hasY2AxisRegression) {
 			ObservableList<MultiAxisChart.Series<X, Y>> series = getData();
 			for (MultiAxisChart.Series<X, Y> s : series) {
-				Line l = null;
-				if (y2AxisRegressionType == MultiAxisChart.LINEAR_REGRESSION) {
-					l = calcLinearRegression(s, MultiAxisChart.Y2_AXIS);
-					Line seriesRegressionLine = initRegressionLine(l, getY2Axis());
+				Path p = calcQuadraticRegression(s, MultiAxisChart.Y2_AXIS, y2AxisRegressionType);
 
-					if (seriesRegressionLine != null) {
-						y2RegressionLines.add(seriesRegressionLine);
-					}
-				} else {
-					// TODO : call for polynomial regression
+				if (p != null) {
+					y2RegressionLines.add(p);
 				}
 			}
 		}
 
 		int index = 0;
-		for (Line l : y1RegressionLines) {
-			l.setStrokeWidth(2);
-			l.setStroke(Color.web(y1RegressionSeriesColors[index++]));
-			getPlotChildren().add(l);
+		for (Shape s : y1RegressionLines) {
+			s.setStrokeWidth(2);
+			s.setStroke(Color.web(y1RegressionSeriesColors[index++]));
+			getPlotChildren().add(s);
 		}
 
 		index = 0;
-		for (Line l : y2RegressionLines) {
-			l.setStrokeWidth(2);
-			l.setStroke(Color.web(y2RegressionSeriesColors[index++]));
-			getPlotChildren().add(l);
+		for (Shape s : y2RegressionLines) {
+			s.setStrokeWidth(2);
+			s.setStroke(Color.web(y2RegressionSeriesColors[index++]));
+			getPlotChildren().add(s);
 		}
 
+	}
+
+	private Path calcQuadraticRegression(Series<X, Y> s, int yAxisIndex, int polyDegree) {
+
+		PolynomialFitter quadraticPolyFilter = new PolynomialFitter(polyDegree);
+
+		if (yAxisIndex == Y2_AXIS && y2Axis == null)
+			throw new NullPointerException("Y2 Axis is not defind.");
+
+		ArrayList<Point> regressionPoints = new ArrayList<>();
+
+		double index = 0;
+		for (Iterator<Data<X, Y>> it = getDisplayedDataIterator(s); it.hasNext();) {
+			Data<X, Y> item = it.next();
+
+			if ((yAxisIndex == Y1_AXIS && item.getExtraValue() == null) || (int) item.getExtraValue() == yAxisIndex) {
+				if (getXAxis() instanceof NumberAxis) {
+					regressionPoints.add(new MultiAxisChart.Point(item.getCurrentX(), item.getCurrentY()));
+					double x = (int) item.getCurrentX();
+					double y = (int) item.getCurrentY();
+					quadraticPolyFilter.addPoint(x, y);
+				} else {
+					regressionPoints.add(new MultiAxisChart.Point(index++, item.getCurrentY()));
+					quadraticPolyFilter.addPoint((double) index++, (double) item.getCurrentY());
+				}
+			}
+		}
+
+		double xMax = Double.MIN_VALUE;
+		double xMin = Double.MAX_VALUE;
+
+		for (Point p : regressionPoints) {
+			double currentX = getValue(p.getX());
+			if (currentX > xMax) {
+				xMax = currentX;
+			}
+			if (currentX < xMin) {
+				xMin = currentX;
+			}
+		}
+
+		Polynomial polynomial = quadraticPolyFilter.getBestFit();
+
+		if (regressionPoints.size() < 2) {
+			return null;
+		} else {
+
+			Path path = new Path();
+			path.setStrokeWidth(2);
+
+			MoveTo moveTo = new MoveTo();
+
+			moveTo.setX(findXChartCord(xMin));
+			moveTo.setY(findYChartCord(polynomial.getY(xMin), y1Axis));
+
+			path.getElements().add(moveTo);
+
+			for (double x = xMin + 1; x < xMax; x = x + getXAxis().getTickLabelGap() / 5.0) {
+				LineTo lineTo = new LineTo();
+				lineTo.setX(findXChartCord(x));
+				lineTo.setY(findYChartCord(polynomial.getY(x), y1Axis));
+
+				path.getElements().add(lineTo);
+			}
+			return path;
+		}
+	}
+
+	private double findXChartCord(double x) {
+		double chartX = -1;
+		if (getXAxis() instanceof NumberAxis) {
+			chartX = ((NumberAxis) getXAxis()).getDisplayPosition(x);
+		} else {
+			chartX = ((CategoryAxis) getXAxis())
+					.getDisplayPosition(((CategoryAxis) getXAxis()).getCategories().get((int) x));
+
+		}
+		return chartX;
+	}
+
+	private double findYChartCord(double y, Axis<?> yAxis) {
+		double chartY = -1;
+		chartY = ((NumberAxis) yAxis).getDisplayPosition(y);
+		return chartY;
 	}
 
 	public void setRegressionColor(int axisPos, int index, String webColor) {
