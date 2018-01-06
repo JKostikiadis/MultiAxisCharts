@@ -26,17 +26,21 @@ series1.setName("April");
 MultiAxisChart.Series<Number, Number> series2 = new MultiAxisChart.Series<Number, Number>();
 series2.setName("May");
 
-series1.getData().add(new MultiAxisChart.Data<Number, Number>(2, 4, MultiAxisChart.Y1_AXIS));
-series1.getData().add(new MultiAxisChart.Data<Number, Number>(7, 10, MultiAxisChart.Y1_AXIS));
-series1.getData().add(new MultiAxisChart.Data<Number, Number>(12, 15, MultiAxisChart.Y1_AXIS));
-series1.getData().add(new MultiAxisChart.Data<Number, Number>(16, 8, MultiAxisChart.Y1_AXIS));
-series1.getData().add(new MultiAxisChart.Data<Number, Number>(21, 5, MultiAxisChart.Y1_AXIS));
+series1.getData().add(new MultiAxisChart.Data<Number, Number>(100, 2298, MultiAxisChart.Y1_AXIS));
+series1.getData().add(new MultiAxisChart.Data<Number, Number>(110, 2193, MultiAxisChart.Y1_AXIS));
+series1.getData().add(new MultiAxisChart.Data<Number, Number>(120, 2469, MultiAxisChart.Y1_AXIS));
+series1.getData().add(new MultiAxisChart.Data<Number, Number>(130, 2332, MultiAxisChart.Y1_AXIS));
+series1.getData().add(new MultiAxisChart.Data<Number, Number>(140, 2404, MultiAxisChart.Y1_AXIS));
+series1.getData().add(new MultiAxisChart.Data<Number, Number>(150, 2399, MultiAxisChart.Y1_AXIS));
+series1.getData().add(new MultiAxisChart.Data<Number, Number>(160, 2240, MultiAxisChart.Y1_AXIS));
 
-series2.getData().add(new MultiAxisChart.Data<Number, Number>(2, 200, MultiAxisChart.Y2_AXIS));
-series2.getData().add(new MultiAxisChart.Data<Number, Number>(7, 300, MultiAxisChart.Y2_AXIS));
-series2.getData().add(new MultiAxisChart.Data<Number, Number>(12, 400, MultiAxisChart.Y2_AXIS));
-series2.getData().add(new MultiAxisChart.Data<Number, Number>(16, 500, MultiAxisChart.Y2_AXIS));
-series2.getData().add(new MultiAxisChart.Data<Number, Number>(21, 600, MultiAxisChart.Y2_AXIS));
+series2.getData().add(new MultiAxisChart.Data<Number, Number>(100, 1889, MultiAxisChart.Y2_AXIS));
+series2.getData().add(new MultiAxisChart.Data<Number, Number>(110, 1935, MultiAxisChart.Y2_AXIS));
+series2.getData().add(new MultiAxisChart.Data<Number, Number>(120, 2337, MultiAxisChart.Y2_AXIS));
+series2.getData().add(new MultiAxisChart.Data<Number, Number>(130, 2196, MultiAxisChart.Y2_AXIS));
+series2.getData().add(new MultiAxisChart.Data<Number, Number>(140, 2398, MultiAxisChart.Y2_AXIS));
+series2.getData().add(new MultiAxisChart.Data<Number, Number>(150, 2579, MultiAxisChart.Y2_AXIS));
+series2.getData().add(new MultiAxisChart.Data<Number, Number>(160, 2601, MultiAxisChart.Y2_AXIS));
 
 chart.getData().addAll(series1, series2);
 ```
@@ -46,8 +50,8 @@ chart.getData().addAll(series1, series2);
 In order to show the Linear regression for each y axis you have to call :
 
 ```java
-chart.setRegression(MultiAxisChart.Y1_AXIS, MultiAxisChart.LINEAR_REGRESSION);
-chart.setRegression(MultiAxisChart.Y2_AXIS, MultiAxisChart.LINEAR_REGRESSION);
+chart.setRegression(MultiAxisChart.Y1_AXIS, MultiAxisChart.DEGREE_NUM2); // quadratic
+chart.setRegression(MultiAxisChart.Y2_AXIS, MultiAxisChart.DEGREE_NUM1); // linear
 ```
 
 Some hints :
