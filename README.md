@@ -16,6 +16,11 @@ Available Chart:
 The charts uses the well known Axis (NumberAxis, CategoryAxis) and to add data to the chart you have to add one or more MultiAxisChart.Series<?,?> containing new MultiAxisChart.Data<?,?> data. Example :
 
 ```java
+
+NumberAxis xAxis = new NumberAxis(90,170,10);
+NumberAxis yAxis = new NumberAxis(1700,2650,50);
+NumberAxis y2Axis = new NumberAxis(1800,2800,50);
+
 MultiAxisScatterChart chart = new MultiAxisScatterChart(xAxis, yAxis, y2Axis);
 chart.setTitle("Just an example");
 chart.setPrefSize(500, 500);
