@@ -40,7 +40,7 @@ import javafx.scene.shape.StrokeLineJoin;
 import javafx.util.Duration;
 
 /**
- * AreaChart - Plots the area between the line that connects the data points and
+ * MultiAxisAreaChart - Plots the area between the line that connects the data points and
  * the 0 line on the Y axis.
  * 
  * @since JavaFX 2.0

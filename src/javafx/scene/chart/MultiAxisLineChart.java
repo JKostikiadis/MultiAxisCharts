@@ -188,8 +188,7 @@ public class MultiAxisLineChart<X, Y> extends MultiAxisChart<X, Y> {
 		setData(data);
 	}
 
-	// -------------- METHODS
-	// ------------------------------------------------------------------------------------------
+	// -------------- METHODS-------------------------------------------------------------
 
 	/** @inheritDoc */
 	@Override

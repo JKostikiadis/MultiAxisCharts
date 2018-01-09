@@ -26,7 +26,7 @@ public class MultiAxisScatterChart<X, Y> extends MultiAxisChart<X, Y> {
 	// -------------- CONSTRUCTORS ----------------------------------------------
 
 	/**
-	 * Construct a new ScatterChart with the given axis and data.
+	 * Construct a new MultiAxisScatterChart with the given axis and data.
 	 *
 	 * @param xAxis
 	 *            The x axis to use
@@ -39,7 +39,7 @@ public class MultiAxisScatterChart<X, Y> extends MultiAxisChart<X, Y> {
 	}
 
 	/**
-	 * Construct a new ScatterChart with the given axis and data.
+	 * Construct a new MultiAxisScatterChart with the given axis and data.
 	 *
 	 * @param xAxis
 	 *            The x axis to use
