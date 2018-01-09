@@ -56,11 +56,11 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 	public static final int NONE = 0;
 	public static final int DEGREE_NUM1 = 1;
 	public static final int DEGREE_NUM2 = 2;
-	public static final int DEGREE_NUM3 = 2;
-	public static final int DEGREE_NUM4 = 2;
-	public static final int DEGREE_NUM5 = 2;
-	public static final int DEGREE_NUM6 = 2;
-	public static final int DEGREE_NUM7 = 2;
+	public static final int DEGREE_NUM3 = 3;
+	public static final int DEGREE_NUM4 = 4;
+	public static final int DEGREE_NUM5 = 5;
+	public static final int DEGREE_NUM6 = 6;
+	public static final int DEGREE_NUM7 = 7;
 
 	private boolean hasY1AxisRegression;
 	private boolean hasY2AxisRegression;
@@ -1085,31 +1085,6 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 		drawRegressions();
 	}
 
-	private Line initLinearRegressionLine(Line l, Axis<?> yAxis) {
-		if (l == null) {
-			return null;
-		}
-
-		double x1, x2, y1, y2;
-
-		if (getXAxis() instanceof NumberAxis) {
-			x1 = ((NumberAxis) getXAxis()).getDisplayPosition(l.getStartX());
-			x2 = ((NumberAxis) getXAxis()).getDisplayPosition(l.getEndX());
-		} else {
-			x1 = ((CategoryAxis) getXAxis())
-					.getDisplayPosition(((CategoryAxis) getXAxis()).getCategories().get((int) l.getStartX()));
-			x2 = ((CategoryAxis) getXAxis())
-					.getDisplayPosition(((CategoryAxis) getXAxis()).getCategories().get((int) l.getEndX()));
-		}
-
-		y1 = ((NumberAxis) yAxis).getDisplayPosition(l.getStartY());
-		y2 = ((NumberAxis) yAxis).getDisplayPosition(l.getEndY());
-
-		Line y1RegressionLine = new Line(x1, y1, x2, y2);
-		return y1RegressionLine;
-
-	}
-
 	private void drawRegressions() {
 
 		getPlotChildren().removeAll(y1RegressionLines);
@@ -1121,7 +1096,7 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 		if (hasY1AxisRegression) {
 			ObservableList<MultiAxisChart.Series<X, Y>> series = getData();
 			for (MultiAxisChart.Series<X, Y> s : series) {
-				Path p = calcQuadraticRegression(s, MultiAxisChart.Y1_AXIS, y1AxisRegressionType);
+				Path p = calcRegression(s, MultiAxisChart.Y1_AXIS, y1AxisRegressionType);
 
 				if (p != null) {
 					y1RegressionLines.add(p);
@@ -1132,7 +1107,7 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 		if (hasY2AxisRegression) {
 			ObservableList<MultiAxisChart.Series<X, Y>> series = getData();
 			for (MultiAxisChart.Series<X, Y> s : series) {
-				Path p = calcQuadraticRegression(s, MultiAxisChart.Y2_AXIS, y2AxisRegressionType);
+				Path p = calcRegression(s, MultiAxisChart.Y2_AXIS, y2AxisRegressionType);
 
 				if (p != null) {
 					y2RegressionLines.add(p);
@@ -1156,8 +1131,7 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 
 	}
 
-	private Path calcQuadraticRegression(Series<X, Y> s, int yAxisIndex, int polyDegree) {
-
+	private Path calcRegression(Series<X, Y> s, int yAxisIndex, int polyDegree) {
 		PolynomialFitter quadraticPolyFilter = new PolynomialFitter(polyDegree);
 
 		if (yAxisIndex == Y2_AXIS && y2Axis == null)

@@ -206,7 +206,7 @@ public class MultiAxisLineChart<X, Y> extends MultiAxisChart<X, Y> {
 			xData = new ArrayList<X>();
 		if (y1a.isAutoRanging())
 			y1Data = new ArrayList<Y>();
-		if (y2a.isAutoRanging())
+		if (y2a!= null && y2a.isAutoRanging())
 			y2Data = new ArrayList<Y>();
 
 		if (xData != null || y1Data != null) {
