@@ -1151,7 +1151,9 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 					quadraticPolyFilter.addPoint(x, y);
 				} else {
 					regressionPoints.add(new MultiAxisChart.Point(index++, item.getCurrentY()));
-					quadraticPolyFilter.addPoint((double) index++, (double) item.getCurrentY());
+					double x = (int) index++;
+					double y = (int) item.getCurrentY();
+					quadraticPolyFilter.addPoint(x, y);
 				}
 			}
 		}
@@ -1180,14 +1182,22 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 
 			MoveTo moveTo = new MoveTo();
 
-			moveTo.setX(findXChartCord(xMin));
+			if (xAxis instanceof CategoryAxis) {
+				moveTo.setX(findXCategoryChartCord(xMin, xMin, xMax));
+			} else {
+				moveTo.setX(findXChartCord(xMin));
+			}
 			moveTo.setY(findYChartCord(polynomial.getY(xMin), y1Axis));
 
 			path.getElements().add(moveTo);
 
-			for (double x = xMin + 1; x < xMax; x = x + getXAxis().getTickLabelGap() / 5.0) {
+			for (double x = xMin + 1; x <= xMax; x = x + getXAxis().getTickLabelGap() / 10.0) {
 				LineTo lineTo = new LineTo();
-				lineTo.setX(findXChartCord(x));
+				if (xAxis instanceof CategoryAxis) {
+					lineTo.setX(findXCategoryChartCord(x, xMin, xMax));
+				} else {
+					lineTo.setX(findXChartCord(x));
+				}
 				lineTo.setY(findYChartCord(polynomial.getY(x), y1Axis));
 
 				path.getElements().add(lineTo);
@@ -1198,14 +1208,18 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 
 	private double findXChartCord(double x) {
 		double chartX = -1;
-		if (getXAxis() instanceof NumberAxis) {
-			chartX = ((NumberAxis) getXAxis()).getDisplayPosition(x);
-		} else {
-			chartX = ((CategoryAxis) getXAxis())
-					.getDisplayPosition(((CategoryAxis) getXAxis()).getCategories().get((int) x));
-
-		}
+		chartX = ((NumberAxis) getXAxis()).getDisplayPosition(x);
 		return chartX;
+	}
+
+	private double findXCategoryChartCord(double x, double xMin, double xMax) {
+		CategoryAxis xAxis = (CategoryAxis) getXAxis();
+		double xStartPos = xAxis.getDisplayPosition(xAxis.getCategories().get(0));
+		double xEndPos = xAxis.getDisplayPosition(xAxis.getCategories().get(xAxis.getCategories().size() - 1));
+
+		double ratio = x / xMax;
+
+		return (xEndPos - xStartPos) * ratio + xStartPos;
 	}
 
 	private double findYChartCord(double y, Axis<?> yAxis) {
