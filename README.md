@@ -58,7 +58,7 @@ In order to show the Linear regression for each y axis you have to call :
 chart.setRegression(AxisNumber, NumberOfDegree);
 ```
 
-Where AxisNumber can be either MultiAxisChart.Y1_AXIS or MultiAxisChart.Y2_AXIS
+Where AxisNumber can be either MultiAxisChart.Y1_AXIS or MultiAxisChart.Y2_AXIS and NumberOfDegree can have values from 0 to 7 (MultiAxisChart.DEGREE_NUM0 , MultiAxisChart.DEGREE_NUM1 , ... , MultiAxisChart.DEGREE_NUM7) where the zero degree represent a full path from all points like a line chart and each degree above zero represents regressions like linear quadratic etc.
 
 
 Some hints :
