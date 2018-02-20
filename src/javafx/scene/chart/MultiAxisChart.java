@@ -1134,9 +1134,13 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 
 	private Path calcRegression(Series<X, Y> s, int yAxisIndex, int polyDegree) {
 
+		
+		
 		if (yAxisIndex == Y2_AXIS && y2Axis == null)
 			throw new NullPointerException("Y2 Axis is not defind.");
 
+		Axis yAxis = yAxisIndex == Y2_AXIS ? y2Axis : y1Axis;
+		
 		ArrayList<Point> regressionPoints = new ArrayList<>();
 
 		PolynomialFitter quadraticPolyFilter = new PolynomialFitter(polyDegree);
@@ -1194,8 +1198,7 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 			}
 
 			if (polyDegree == DEGREE_NUM0) {
-
-				moveTo.setY(findYChartCord(getValue(regressionPoints.remove(0).getY()), y1Axis));
+				moveTo.setY(findYChartCord(getValue(regressionPoints.remove(0).getY()), yAxis));
 
 				path.getElements().add(moveTo);
 
@@ -1210,14 +1213,14 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 					} else {
 						lineTo.setX(findXChartCord(xValue));
 					}
-					lineTo.setY(findYChartCord(yValue, y1Axis));
+					lineTo.setY(findYChartCord(yValue, yAxis));
 
 					path.getElements().add(lineTo);
 				}
 
 			} else {
 
-				moveTo.setY(findYChartCord(polynomial.getY(xMin), y1Axis));
+				moveTo.setY(findYChartCord(polynomial.getY(xMin), yAxis));
 
 				path.getElements().add(moveTo);
 
@@ -1228,7 +1231,7 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 					} else {
 						lineTo.setX(findXChartCord(x));
 					}
-					lineTo.setY(findYChartCord(polynomial.getY(x), y1Axis));
+					lineTo.setY(findYChartCord(polynomial.getY(x), yAxis));
 
 					path.getElements().add(lineTo);
 				}
