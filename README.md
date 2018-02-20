@@ -48,6 +48,10 @@ series2.getData().add(new MultiAxisChart.Data<Number, Number>(150, 2579, MultiAx
 series2.getData().add(new MultiAxisChart.Data<Number, Number>(160, 2601, MultiAxisChart.Y2_AXIS));
 
 chart.getData().addAll(series1, series2);
+
+chart.setRegression(MultiAxisChart.Y1_AXIS, MultiAxisChart.DEGREE_NUM2); // quadratic
+chart.setRegression(MultiAxisChart.Y2_AXIS, MultiAxisChart.DEGREE_NUM1); // linear
+
 ```
 
 ![MultiAxisScatterChart ](./preview/MultiAxisScatterChart.png)
@@ -60,6 +64,15 @@ chart.setRegression(AxisNumber, NumberOfDegree);
 
 Where AxisNumber can be either MultiAxisChart.Y1_AXIS or MultiAxisChart.Y2_AXIS and NumberOfDegree can have values from 0 to 7 (MultiAxisChart.DEGREE_NUM0 , MultiAxisChart.DEGREE_NUM1 , ... , MultiAxisChart.DEGREE_NUM7) where the zero degree represent a full path from all points like a line chart and each degree above zero represents regressions like linear quadratic etc.
 
+
+Playing around with the line regression degree you can find the one matches your needs. The above example with different values :
+
+```java
+chart.setRegression(MultiAxisChart.Y1_AXIS, MultiAxisChart.DEGREE_NUM6);
+chart.setRegression(MultiAxisChart.Y2_AXIS, MultiAxisChart.DEGREE_NUM0);
+```
+
+![MultiAxisScatterChart ](./preview/MultiAxisScatterChart2.png)
 
 Some hints :
 - The extra value of the MultiAxisChart.Data defines the Y Axis in which the data will be displayed. Trying to add data to the Y2_AXIS while the y2Axis is null will throw a NullPointerException
