@@ -53,7 +53,8 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 	public static final int Y1_AXIS = 0;
 	public static final int Y2_AXIS = 1;
 
-	public static final int NONE = 0;
+	public static final int NONE = -1;
+	public static final int DEGREE_NUM0 = 0;
 	public static final int DEGREE_NUM1 = 1;
 	public static final int DEGREE_NUM2 = 2;
 	public static final int DEGREE_NUM3 = 3;
@@ -1132,12 +1133,13 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 	}
 
 	private Path calcRegression(Series<X, Y> s, int yAxisIndex, int polyDegree) {
-		PolynomialFitter quadraticPolyFilter = new PolynomialFitter(polyDegree);
 
 		if (yAxisIndex == Y2_AXIS && y2Axis == null)
 			throw new NullPointerException("Y2 Axis is not defind.");
 
 		ArrayList<Point> regressionPoints = new ArrayList<>();
+
+		PolynomialFitter quadraticPolyFilter = new PolynomialFitter(polyDegree);
 
 		double index = 0;
 		for (Iterator<Data<X, Y>> it = getDisplayedDataIterator(s); it.hasNext();) {
@@ -1146,17 +1148,20 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 			if ((yAxisIndex == Y1_AXIS && item.getExtraValue() == null) || (int) item.getExtraValue() == yAxisIndex) {
 				if (getXAxis() instanceof NumberAxis) {
 					regressionPoints.add(new MultiAxisChart.Point(item.getCurrentX(), item.getCurrentY()));
-					double x = (int) item.getCurrentX();
-					double y = (int) item.getCurrentY();
+					double x = getValue(item.getCurrentX());
+					double y = getValue(item.getCurrentY());
 					quadraticPolyFilter.addPoint(x, y);
 				} else {
 					regressionPoints.add(new MultiAxisChart.Point(index++, item.getCurrentY()));
-					double x = (int) index++;
-					double y = (int) item.getCurrentY();
+					double x = getValue(index++);
+					double y = getValue(item.getCurrentY());
 					quadraticPolyFilter.addPoint(x, y);
 				}
 			}
 		}
+
+		if (regressionPoints.size() == 0)
+			return new Path();
 
 		double xMax = Double.MIN_VALUE;
 		double xMin = Double.MAX_VALUE;
@@ -1187,21 +1192,48 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 			} else {
 				moveTo.setX(findXChartCord(xMin));
 			}
-			moveTo.setY(findYChartCord(polynomial.getY(xMin), y1Axis));
 
-			path.getElements().add(moveTo);
+			if (polyDegree == DEGREE_NUM0) {
 
-			for (double x = xMin + 1; x <= xMax; x = x + getXAxis().getTickLabelGap() / 10.0) {
-				LineTo lineTo = new LineTo();
-				if (xAxis instanceof CategoryAxis) {
-					lineTo.setX(findXCategoryChartCord(x, xMin, xMax));
-				} else {
-					lineTo.setX(findXChartCord(x));
+				moveTo.setY(findYChartCord(getValue(regressionPoints.remove(0).getY()), y1Axis));
+
+				path.getElements().add(moveTo);
+
+				for (Point p : regressionPoints) {
+
+					double xValue = getValue(p.getX());
+					double yValue = getValue(p.getY());
+
+					LineTo lineTo = new LineTo();
+					if (xAxis instanceof CategoryAxis) {
+						lineTo.setX(findXCategoryChartCord(xValue, xMin, xMax));
+					} else {
+						lineTo.setX(findXChartCord(xValue));
+					}
+					lineTo.setY(findYChartCord(yValue, y1Axis));
+
+					path.getElements().add(lineTo);
 				}
-				lineTo.setY(findYChartCord(polynomial.getY(x), y1Axis));
 
-				path.getElements().add(lineTo);
+			} else {
+
+				moveTo.setY(findYChartCord(polynomial.getY(xMin), y1Axis));
+
+				path.getElements().add(moveTo);
+
+				for (double x = xMin + 1; x <= xMax; x = x + getXAxis().getTickLabelGap() / 10.0) {
+					LineTo lineTo = new LineTo();
+					if (xAxis instanceof CategoryAxis) {
+						lineTo.setX(findXCategoryChartCord(x, xMin, xMax));
+					} else {
+						lineTo.setX(findXChartCord(x));
+					}
+					lineTo.setY(findYChartCord(polynomial.getY(x), y1Axis));
+
+					path.getElements().add(lineTo);
+				}
 			}
+
 			return path;
 		}
 	}
@@ -1318,21 +1350,13 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 	}
 
 	public void setRegression(int yAxisIndex, int type) {
-
-		if (yAxisIndex == Y1_AXIS && type != NONE) {
-			hasY1AxisRegression = true;
+		if (yAxisIndex == Y1_AXIS) {
+			hasY1AxisRegression = type != NONE;
 			y1AxisRegressionType = type;
-		} else if (yAxisIndex == Y1_AXIS && type == NONE) {
-			hasY1AxisRegression = false;
-			y1AxisRegressionType = type;
-		} else if (yAxisIndex == Y2_AXIS && type != NONE) {
-			hasY2AxisRegression = true;
-			y2AxisRegressionType = type;
 		} else {
-			hasY2AxisRegression = false;
+			hasY2AxisRegression = type != NONE;
 			y2AxisRegressionType = type;
 		}
-
 	}
 
 	/**
