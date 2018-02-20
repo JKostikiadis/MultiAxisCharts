@@ -55,9 +55,11 @@ chart.getData().addAll(series1, series2);
 In order to show the Linear regression for each y axis you have to call :
 
 ```java
-chart.setRegression(MultiAxisChart.Y1_AXIS, MultiAxisChart.DEGREE_NUM2); // quadratic
-chart.setRegression(MultiAxisChart.Y2_AXIS, MultiAxisChart.DEGREE_NUM1); // linear
+chart.setRegression(AxisNumber, NumberOfDegree);
 ```
+
+Where AxisNumber can be either MultiAxisChart.Y1_AXIS or MultiAxisChart.Y2_AXIS
+
 
 Some hints :
 - The extra value of the MultiAxisChart.Data defines the Y Axis in which the data will be displayed. Trying to add data to the Y2_AXIS while the y2Axis is null will throw a NullPointerException
@@ -76,7 +78,7 @@ chart.setRegressionColor(MultiAxisChart.Y2_AXIS, 0, "#FBA71B");
 You can clone and build the entire project to create a jar library by yourself or you can download the Pre-Build Jar file and load it to your build path for your projects.
 
 #### Pre-Build Jar 
-[MultiAxisScatterChart.jar V1.0](https://github.com/JKostikiadis/MultiAxisCharts/raw/master/build/MultiAxisCharts.jar)
+[MultiAxisScatterChart.jar V1.0](https://github.com/JKostikiadis/MultiAxisCharts/raw/master/build/MultiAxisCharts.jar) // Will be added soon.
 
 
 ### Todos
