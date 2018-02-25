@@ -91,7 +91,7 @@ chart.setRegressionColor(MultiAxisChart.Y2_AXIS, 0, "#FBA71B");
 You can clone and build the entire project to create a jar library by yourself or you can download the Pre-Build Jar file and load it to your build path for your projects.
 
 #### Pre-Build Jar 
-[MultiAxisScatterChart.jar V1.0](https://github.com/JKostikiadis/MultiAxisCharts/raw/master/build/MultiAxisCharts.jar) // Will be added soon.
+[MultiAxisScatterChart.jar V1.0](https://github.com/JKostikiadis/MultiAxisCharts/raw/master/build/MultiAxisCharts.jar)
 
 
 ### Todos
