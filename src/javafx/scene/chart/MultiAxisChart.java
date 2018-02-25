@@ -1134,13 +1134,11 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 
 	private Path calcRegression(Series<X, Y> s, int yAxisIndex, int polyDegree) {
 
-		
-		
 		if (yAxisIndex == Y2_AXIS && y2Axis == null)
 			throw new NullPointerException("Y2 Axis is not defind.");
 
 		Axis yAxis = yAxisIndex == Y2_AXIS ? y2Axis : y1Axis;
-		
+
 		ArrayList<Point> regressionPoints = new ArrayList<>();
 
 		PolynomialFitter quadraticPolyFilter = new PolynomialFitter(polyDegree);
@@ -1224,7 +1222,9 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 
 				path.getElements().add(moveTo);
 
-				for (double x = xMin + 1; x <= xMax; x = x + getXAxis().getTickLabelGap() / 10.0) {
+				double stepDivider = 10.0;
+
+				for (double x = xMin + 1; x <= xMax; x = x + getXAxis().getTickLabelGap() / stepDivider) {
 					LineTo lineTo = new LineTo();
 					if (xAxis instanceof CategoryAxis) {
 						lineTo.setX(findXCategoryChartCord(x, xMin, xMax));
@@ -1234,6 +1234,11 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 					lineTo.setY(findYChartCord(polynomial.getY(x), yAxis));
 
 					path.getElements().add(lineTo);
+
+					if (x + getXAxis().getTickLabelGap() / stepDivider > xMax && x < xMax) {
+						stepDivider = stepDivider * 10.0;
+					}
+
 				}
 			}
 
