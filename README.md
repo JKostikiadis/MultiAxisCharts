@@ -2,7 +2,7 @@
 
 MultiAxisCharts library is an extension of the JavaFX available charts . All the graphical charts available in the javafx.scene.chart package has very few functionalities and are bound to the two axis system (X-Y) making the need to display multiple data on different Y axis almost impossible. That's where MultiAxisCharts library comes in, providing :
   - Two Y-Axis for displaying multiple data ( X-Y1-Y2 axis)
-  - The Linear (And polynomial soon) regression of the data represented
+  - The Linear and polynomial (up to 8 degree) regression of the data represented
 
 Available Chart:
   - MultiAxisScatterChart
