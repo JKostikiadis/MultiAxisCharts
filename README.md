@@ -78,6 +78,7 @@ Some hints :
 - The extra value of the MultiAxisChart.Data defines the Y Axis in which the data will be displayed. Trying to add data to the Y2_AXIS while the y2Axis is null will throw a NullPointerException
 - MultiAxisBarChart can only support CategoryAxis for X Axis.
 - The chart values are not animated but the Axis are.
+- In case you use regression with DEGREE_NUM0 which means it's just a path from point to point, then you will need to sort your series values in order to display the correct path.
 - In order to change Colors, fonts etc you can do that using CSS using the same CSS rules as javafx.scene.chart
 - In order to change the regression lines color you can do that by calling :
 
