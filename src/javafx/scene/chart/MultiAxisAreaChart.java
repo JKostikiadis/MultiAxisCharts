@@ -9,13 +9,7 @@ import java.util.Map;
 
 import com.sun.javafx.charts.Legend;
 import com.sun.javafx.charts.Legend.LegendItem;
-import com.sun.javafx.css.converters.BooleanConverter;
 
-import javafx.animation.FadeTransition;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -26,7 +20,6 @@ import javafx.collections.ObservableList;
 import javafx.css.CssMetaData;
 import javafx.css.Styleable;
 import javafx.css.StyleableBooleanProperty;
-import javafx.css.StyleableProperty;
 import javafx.scene.AccessibleRole;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -37,11 +30,10 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
 import javafx.scene.shape.StrokeLineJoin;
-import javafx.util.Duration;
 
 /**
- * MultiAxisAreaChart - Plots the area between the line that connects the data points and
- * the 0 line on the Y axis.
+ * MultiAxisAreaChart - Plots the area between the line that connects the data
+ * points and the 0 line on the Y axis.
  * 
  * @since JavaFX 2.0
  */
@@ -208,61 +200,7 @@ public class MultiAxisAreaChart<X, Y> extends MultiAxisChart<X, Y> {
 	@Override
 	protected void dataItemAdded(Series<X, Y> series, int itemIndex, Data<X, Y> item) {
 		final Node symbol = createSymbol(series, getData().indexOf(series), item, itemIndex);
-		if (shouldAnimate()) {
-			boolean animate = false;
-			if (itemIndex > 0 && itemIndex < (series.getData().size() - 1)) {
-				animate = true;
-				Data<X, Y> p1 = series.getData().get(itemIndex - 1);
-				Data<X, Y> p2 = series.getData().get(itemIndex + 1);
-				double x1 = getXAxis().toNumericValue(p1.getXValue());
-				double y1 = getY1Axis().toNumericValue(p1.getYValue());
-				double x3 = getXAxis().toNumericValue(p2.getXValue());
-				double y3 = getY1Axis().toNumericValue(p2.getYValue());
-
-				double x2 = getXAxis().toNumericValue(item.getXValue());
-				double y2 = getY1Axis().toNumericValue(item.getYValue());
-
-				// //1. y intercept of the line : y = ((y3-y1)/(x3-x1)) * x2 + (x3y1 - y3x1)/(x3
-				// -x1)
-				double y = ((y3 - y1) / (x3 - x1)) * x2 + (x3 * y1 - y3 * x1) / (x3 - x1);
-				item.setCurrentY(getY1Axis().toRealValue(y));
-				item.setCurrentX(getXAxis().toRealValue(x2));
-				// 2. we can simply use the midpoint on the line as well..
-				// double x = (x3 + x1)/2;
-				// double y = (y3 + y1)/2;
-				// item.setCurrentX(x);
-				// item.setCurrentY(y);
-			} else if (itemIndex == 0 && series.getData().size() > 1) {
-				animate = true;
-				item.setCurrentX(series.getData().get(1).getXValue());
-				item.setCurrentY(series.getData().get(1).getYValue());
-			} else if (itemIndex == (series.getData().size() - 1) && series.getData().size() > 1) {
-				animate = true;
-				int last = series.getData().size() - 2;
-				item.setCurrentX(series.getData().get(last).getXValue());
-				item.setCurrentY(series.getData().get(last).getYValue());
-			}
-			if (symbol != null) {
-				// fade in new symbol
-				symbol.setOpacity(0);
-				getPlotChildren().add(symbol);
-				FadeTransition ft = new FadeTransition(Duration.millis(500), symbol);
-				ft.setToValue(1);
-				ft.play();
-			}
-			if (animate) {
-				animate(new KeyFrame(Duration.ZERO, (e) -> {
-					if (symbol != null && !getPlotChildren().contains(symbol)) {
-						getPlotChildren().add(symbol);
-					}
-				}, new KeyValue(item.currentYProperty(), item.getCurrentY()),
-						new KeyValue(item.currentXProperty(), item.getCurrentX())),
-						new KeyFrame(Duration.millis(800),
-								new KeyValue(item.currentYProperty(), item.getYValue(), Interpolator.EASE_BOTH),
-								new KeyValue(item.currentXProperty(), item.getXValue(), Interpolator.EASE_BOTH)));
-			}
-
-		} else if (symbol != null) {
+		if (symbol != null) {
 			getPlotChildren().add(symbol);
 		}
 	}
@@ -277,76 +215,11 @@ public class MultiAxisAreaChart<X, Y> extends MultiAxisChart<X, Y> {
 
 		// remove item from sorted list
 		int itemIndex = series.getItemIndex(item);
-		if (shouldAnimate()) {
-			boolean animate = false;
-			// dataSize represents size of currently visible data. After this operation, the
-			// number will decrement by 1
-			final int dataSize = series.getDataSize();
-			// This is the size of current data list in Series. Note that it might be totaly
-			// different from dataSize as
-			// some big operation might have happened on the list.
-			final int dataListSize = series.getData().size();
-			if (itemIndex > 0 && itemIndex < dataSize - 1) {
-				animate = true;
-				Data<X, Y> p1 = series.getItem(itemIndex - 1);
-				Data<X, Y> p2 = series.getItem(itemIndex + 1);
-				double x1 = getXAxis().toNumericValue(p1.getXValue());
-				double y1 = getY1Axis().toNumericValue(p1.getYValue());
-				double x3 = getXAxis().toNumericValue(p2.getXValue());
-				double y3 = getY1Axis().toNumericValue(p2.getYValue());
 
-				double x2 = getXAxis().toNumericValue(item.getXValue());
-				double y2 = getY1Axis().toNumericValue(item.getYValue());
+		item.setSeries(null);
+		getPlotChildren().remove(symbol);
+		removeDataItemFromDisplay(series, item);
 
-				// //1. y intercept of the line : y = ((y3-y1)/(x3-x1)) * x2 + (x3y1 - y3x1)/(x3
-				// -x1)
-				double y = ((y3 - y1) / (x3 - x1)) * x2 + (x3 * y1 - y3 * x1) / (x3 - x1);
-				item.setCurrentX(getXAxis().toRealValue(x2));
-				item.setCurrentY(getY1Axis().toRealValue(y2));
-				item.setXValue(getXAxis().toRealValue(x2));
-				item.setYValue(getY1Axis().toRealValue(y));
-				// 2. we can simply use the midpoint on the line as well..
-				// double x = (x3 + x1)/2;
-				// double y = (y3 + y1)/2;
-				// item.setCurrentX(x);
-				// item.setCurrentY(y);
-			} else {
-				if (itemIndex == 0 && dataListSize > 1) {
-					animate = true;
-					item.setXValue(series.getData().get(0).getXValue());
-					item.setYValue(series.getData().get(0).getYValue());
-				} else if (itemIndex == (dataSize - 1) && dataListSize > 1) {
-					animate = true;
-					int last = dataListSize - 1;
-					item.setXValue(series.getData().get(last).getXValue());
-					item.setYValue(series.getData().get(last).getYValue());
-				} else if (symbol != null) {
-					// fade out symbol
-					symbol.setOpacity(0);
-					FadeTransition ft = new FadeTransition(Duration.millis(500), symbol);
-					ft.setToValue(0);
-					ft.setOnFinished(actionEvent -> {
-						getPlotChildren().remove(symbol);
-						removeDataItemFromDisplay(series, item);
-					});
-					ft.play();
-				}
-			}
-			if (animate) {
-				animate(new KeyFrame(Duration.ZERO, new KeyValue(item.currentYProperty(), item.getCurrentY()),
-						new KeyValue(item.currentXProperty(), item.getCurrentX())),
-						new KeyFrame(Duration.millis(800), actionEvent -> {
-							item.setSeries(null);
-							getPlotChildren().remove(symbol);
-							removeDataItemFromDisplay(series, item);
-						}, new KeyValue(item.currentYProperty(), item.getYValue(), Interpolator.EASE_BOTH),
-								new KeyValue(item.currentXProperty(), item.getXValue(), Interpolator.EASE_BOTH)));
-			}
-		} else {
-			item.setSeries(null);
-			getPlotChildren().remove(symbol);
-			removeDataItemFromDisplay(series, item);
-		}
 		// Note: better animation here, point should move from old position to new
 		// position at center point between prev and next symbols
 	}
@@ -388,37 +261,19 @@ public class MultiAxisAreaChart<X, Y> extends MultiAxisChart<X, Y> {
 		DoubleProperty seriesYAnimMultiplier = new SimpleDoubleProperty(this, "seriesYMultiplier");
 		seriesYMultiplierMap.put(series, seriesYAnimMultiplier);
 		// handle any data already in series
-		if (shouldAnimate()) {
-			seriesYAnimMultiplier.setValue(0d);
-		} else {
-			seriesYAnimMultiplier.setValue(1d);
-		}
+
+		seriesYAnimMultiplier.setValue(1d);
+
 		getPlotChildren().add(areaGroup);
-		List<KeyFrame> keyFrames = new ArrayList<KeyFrame>();
-		if (shouldAnimate()) {
-			// animate in new series
-			keyFrames.add(new KeyFrame(Duration.ZERO, new KeyValue(areaGroup.opacityProperty(), 0),
-					new KeyValue(seriesYAnimMultiplier, 0)));
-			keyFrames.add(new KeyFrame(Duration.millis(200), new KeyValue(areaGroup.opacityProperty(), 1)));
-			keyFrames.add(new KeyFrame(Duration.millis(500), new KeyValue(seriesYAnimMultiplier, 1)));
-		}
+
 		for (int j = 0; j < series.getData().size(); j++) {
 			Data<X, Y> item = series.getData().get(j);
 			final Node symbol = createSymbol(series, seriesIndex, item, j);
 			if (symbol != null) {
-				if (shouldAnimate()) {
-					symbol.setOpacity(0);
-					getPlotChildren().add(symbol);
-					// fade in new symbol
-					keyFrames.add(new KeyFrame(Duration.ZERO, new KeyValue(symbol.opacityProperty(), 0)));
-					keyFrames.add(new KeyFrame(Duration.millis(200), new KeyValue(symbol.opacityProperty(), 1)));
-				} else {
-					getPlotChildren().add(symbol);
-				}
+				getPlotChildren().add(symbol);
 			}
 		}
-		if (shouldAnimate())
-			animate(keyFrames.toArray(new KeyFrame[keyFrames.size()]));
+
 	}
 
 	private void updateDefaultColorIndex(final MultiAxisChart.Series<X, Y> series) {
@@ -445,15 +300,12 @@ public class MultiAxisAreaChart<X, Y> extends MultiAxisChart<X, Y> {
 		// remove series Y multiplier
 		seriesYMultiplierMap.remove(series);
 		// remove all symbol nodes
-		if (shouldAnimate()) {
-			Timeline tl = new Timeline(createSeriesRemoveTimeLine(series, 400));
-			tl.play();
-		} else {
-			getPlotChildren().remove(series.getNode());
-			for (Data<X, Y> d : series.getData())
-				getPlotChildren().remove(d.getNode());
-			removeSeriesFromDisplay(series);
-		}
+
+		getPlotChildren().remove(series.getNode());
+		for (Data<X, Y> d : series.getData())
+			getPlotChildren().remove(d.getNode());
+		removeSeriesFromDisplay(series);
+
 	}
 
 	/** @inheritDoc */
@@ -473,7 +325,7 @@ public class MultiAxisAreaChart<X, Y> extends MultiAxisChart<X, Y> {
 			for (Iterator<Data<X, Y>> it = getDisplayedDataIterator(series); it.hasNext();) {
 				Data<X, Y> item = it.next();
 				double x = getXAxis().getDisplayPosition(item.getCurrentX());
-				
+
 				double y = -1;
 				if (item.getExtraValue() == null || (int) item.getExtraValue() == MultiAxisChart.Y1_AXIS) {
 					y = getY1Axis().getDisplayPosition(getY1Axis().toRealValue(
@@ -490,7 +342,7 @@ public class MultiAxisAreaChart<X, Y> extends MultiAxisChart<X, Y> {
 						throw new NullPointerException("Y2 axis is not defined.");
 					}
 				}
-				
+
 				constructedPath.add(new LineTo(x, y));
 				if (Double.isNaN(x) || Double.isNaN(y)) {
 					continue;

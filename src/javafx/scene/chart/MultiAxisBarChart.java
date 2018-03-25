@@ -250,11 +250,9 @@ public class MultiAxisBarChart<X, Y> extends MultiAxisChart<X, Y> {
 		}
 		categoryMap.put(category, item);
 		Node bar = createBar(series, getData().indexOf(series), item, itemIndex);
-		if (shouldAnimate()) {
-			animateDataAdd(item, bar);
-		} else {
-			getPlotChildren().add(bar);
-		}
+		
+		getPlotChildren().add(bar);
+		
 	}
 
 	@Override
@@ -265,18 +263,10 @@ public class MultiAxisBarChart<X, Y> extends MultiAxisChart<X, Y> {
 			bar.focusTraversableProperty().unbind();
 		}
 
-		if (shouldAnimate()) {
-			XYValueMap.clear();
-			dataRemoveTimeline = createDataRemoveTimeline(item, bar, series);
-			dataRemoveTimeline.setOnFinished(event -> {
-				item.setSeries(null);
-				removeDataItemFromDisplay(series, item);
-			});
-			dataRemoveTimeline.play();
-		} else {
+		
 			processDataRemove(series, item);
 			removeDataItemFromDisplay(series, item);
-		}
+		
 	}
 
 	/** @inheritDoc */
@@ -317,9 +307,7 @@ public class MultiAxisBarChart<X, Y> extends MultiAxisChart<X, Y> {
 				category = (String) item.getYValue();
 			}
 			categoryMap.put(category, item);
-			if (shouldAnimate()) {
-				animateDataAdd(item, bar);
-			} else {
+			
 				// RT-21164 check if bar value is negative to add NEGATIVE_STYLE style class
 				double barVal = (orientation == Orientation.VERTICAL) ? ((Number) item.getYValue()).doubleValue()
 						: ((Number) item.getXValue()).doubleValue();
@@ -327,7 +315,7 @@ public class MultiAxisBarChart<X, Y> extends MultiAxisChart<X, Y> {
 					bar.getStyleClass().add(NEGATIVE_STYLE);
 				}
 				getPlotChildren().add(bar);
-			}
+			
 		}
 		if (categoryMap.size() > 0)
 			seriesCategoryMap.put(series, categoryMap);
@@ -337,41 +325,14 @@ public class MultiAxisBarChart<X, Y> extends MultiAxisChart<X, Y> {
 	protected void seriesRemoved(final Series<X, Y> series) {
 		updateDefaultColorIndex(series);
 		// remove all symbol nodes
-		if (shouldAnimate()) {
-			pt = new ParallelTransition();
-			pt.setOnFinished(event -> {
-				removeSeriesFromDisplay(series);
-			});
-
-			boolean lastSeries = (getSeriesSize() > 1) ? false : true;
-			XYValueMap.clear();
-			for (final Data<X, Y> d : series.getData()) {
-				final Node bar = d.getNode();
-				// Animate series deletion
-				if (!lastSeries) {
-					Timeline t = createDataRemoveTimeline(d, bar, series);
-					pt.getChildren().add(t);
-				} else {
-					// fade out last series
-					FadeTransition ft = new FadeTransition(Duration.millis(700), bar);
-					ft.setFromValue(1);
-					ft.setToValue(0);
-					ft.setOnFinished(actionEvent -> {
-						processDataRemove(series, d);
-						bar.setOpacity(1.0);
-					});
-					pt.getChildren().add(ft);
-				}
-			}
-			pt.play();
-		} else {
+		
 			for (Data<X, Y> d : series.getData()) {
 				final Node bar = d.getNode();
 				getPlotChildren().remove(bar);
 				updateMap(series, d);
 			}
 			removeSeriesFromDisplay(series);
-		}
+		
 	}
 
 	/** @inheritDoc */
@@ -481,61 +442,6 @@ public class MultiAxisBarChart<X, Y> extends MultiAxisChart<X, Y> {
 		Node bar = item.getNode();
 		getPlotChildren().remove(bar);
 		updateMap(series, item);
-	}
-
-	private void animateDataAdd(Data<X, Y> item, Node bar) {
-		double barVal;
-		if (orientation == Orientation.VERTICAL) {
-			barVal = ((Number) item.getYValue()).doubleValue();
-			if (barVal < 0) {
-				bar.getStyleClass().add(NEGATIVE_STYLE);
-			}
-			item.setCurrentY(getY1Axis().toRealValue((barVal < 0) ? -bottomPos : bottomPos));
-			getPlotChildren().add(bar);
-			item.setYValue(getY1Axis().toRealValue(barVal));
-			animate(new KeyFrame(Duration.ZERO, new KeyValue(item.currentYProperty(), item.getCurrentY())),
-					new KeyFrame(Duration.millis(700),
-							new KeyValue(item.currentYProperty(), item.getYValue(), Interpolator.EASE_BOTH)));
-		} else {
-			barVal = ((Number) item.getXValue()).doubleValue();
-			if (barVal < 0) {
-				bar.getStyleClass().add(NEGATIVE_STYLE);
-			}
-			item.setCurrentX(getXAxis().toRealValue((barVal < 0) ? -bottomPos : bottomPos));
-			getPlotChildren().add(bar);
-			item.setXValue(getXAxis().toRealValue(barVal));
-			animate(new KeyFrame(Duration.ZERO, new KeyValue(item.currentXProperty(), item.getCurrentX())),
-					new KeyFrame(Duration.millis(700),
-							new KeyValue(item.currentXProperty(), item.getXValue(), Interpolator.EASE_BOTH)));
-		}
-	}
-
-	private Timeline createDataRemoveTimeline(final Data<X, Y> item, final Node bar, final Series<X, Y> series) {
-		Timeline t = new Timeline();
-		if (orientation == Orientation.VERTICAL) {
-			// item.setYValue(getY1Axis().toRealValue(getY1Axis().getZeroPosition()));
-
-			// save data values in case the same data item gets added immediately.
-			XYValueMap.put(item, ((Number) item.getYValue()).doubleValue());
-			item.setYValue(getY1Axis().toRealValue(bottomPos));
-			t.getKeyFrames().addAll(
-					new KeyFrame(Duration.ZERO, new KeyValue(item.currentYProperty(), item.getCurrentY())),
-					new KeyFrame(Duration.millis(700), actionEvent -> {
-						processDataRemove(series, item);
-						XYValueMap.clear();
-					}, new KeyValue(item.currentYProperty(), item.getYValue(), Interpolator.EASE_BOTH)));
-		} else {
-			// save data values in case the same data item gets added immediately.
-			XYValueMap.put(item, ((Number) item.getXValue()).doubleValue());
-			item.setXValue(getXAxis().toRealValue(getXAxis().getZeroPosition()));
-			t.getKeyFrames().addAll(
-					new KeyFrame(Duration.ZERO, new KeyValue(item.currentXProperty(), item.getCurrentX())),
-					new KeyFrame(Duration.millis(700), actionEvent -> {
-						processDataRemove(series, item);
-						XYValueMap.clear();
-					}, new KeyValue(item.currentXProperty(), item.getXValue(), Interpolator.EASE_BOTH)));
-		}
-		return t;
 	}
 
 	@Override

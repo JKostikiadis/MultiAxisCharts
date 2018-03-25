@@ -73,16 +73,9 @@ public class MultiAxisScatterChart<X, Y> extends MultiAxisChart<X, Y> {
 		// set symbol styles
 		symbol.getStyleClass().setAll("chart-symbol", "series" + getData().indexOf(series), "data" + itemIndex,
 				series.defaultColorStyleClass);
-		// add and fade in new symbol if animated
-		if (shouldAnimate()) {
-			symbol.setOpacity(0);
-			getPlotChildren().add(symbol);
-			FadeTransition ft = new FadeTransition(Duration.millis(500), symbol);
-			ft.setToValue(1);
-			ft.play();
-		} else {
-			getPlotChildren().add(symbol);
-		}
+		
+		getPlotChildren().add(symbol);
+		
 
 	}
 
@@ -95,20 +88,10 @@ public class MultiAxisScatterChart<X, Y> extends MultiAxisChart<X, Y> {
 			symbol.focusTraversableProperty().unbind();
 		}
 
-		if (shouldAnimate()) {
-			// fade out old symbol
-			FadeTransition ft = new FadeTransition(Duration.millis(500), symbol);
-			ft.setToValue(0);
-			ft.setOnFinished(actionEvent -> {
-				getPlotChildren().remove(symbol);
-				removeDataItemFromDisplay(series, item);
-				symbol.setOpacity(1.0);
-			});
-			ft.play();
-		} else {
+		
 			getPlotChildren().remove(symbol);
 			removeDataItemFromDisplay(series, item);
-		}
+		
 	}
 
 	/** @inheritDoc */
@@ -129,30 +112,13 @@ public class MultiAxisScatterChart<X, Y> extends MultiAxisChart<X, Y> {
 	@Override
 	protected void seriesRemoved(final MultiAxisChart.Series<X, Y> series) {
 		// remove all symbol nodes
-		if (shouldAnimate()) {
-			ParallelTransition pt = new ParallelTransition();
-			pt.setOnFinished(event -> {
-				removeSeriesFromDisplay(series);
-			});
-			for (final Data<X, Y> d : series.getData()) {
-				final Node symbol = d.getNode();
-				// fade out old symbol
-				FadeTransition ft = new FadeTransition(Duration.millis(500), symbol);
-				ft.setToValue(0);
-				ft.setOnFinished(actionEvent -> {
-					getPlotChildren().remove(symbol);
-					symbol.setOpacity(1.0);
-				});
-				pt.getChildren().add(ft);
-			}
-			pt.play();
-		} else {
+		
 			for (final Data<X, Y> d : series.getData()) {
 				final Node symbol = d.getNode();
 				getPlotChildren().remove(symbol);
 			}
 			removeSeriesFromDisplay(series);
-		}
+		
 	}
 
 	/** @inheritDoc */
