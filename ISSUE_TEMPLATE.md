@@ -1,3 +1,10 @@
+### Asking a feature
+
+## Explain the feature and why it should be implemented.
+
+
+### In case of bug
+
 ## Expected Behavior
 
 
