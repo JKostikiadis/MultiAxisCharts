@@ -1,23 +1,23 @@
-## Asking a feature
+# Asking a feature
 
-# Explain the feature and why it should be implemented.
-
-
-## In case of bug
-
-# Expected Behavior
+## Explain the feature and why it should be implemented.
 
 
-# Actual Behavior
+# In case of bug
+
+## Expected Behavior
 
 
-# Steps to Reproduce the Problem
+## Actual Behavior
+
+
+## Steps to Reproduce the Problem
 
   1.
   2.
   3.
 
-# Specifications
+## Specifications
 
   - JDK Version:
   - Platform/OS:
