@@ -1,4 +1,4 @@
-package javafx.scene.chart;
+package com.kostikiadis.charts;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +23,7 @@ import javafx.css.StyleableBooleanProperty;
 import javafx.scene.AccessibleRole;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.chart.Axis;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.LineTo;
@@ -42,7 +43,7 @@ public class MultiAxisAreaChart<X, Y> extends MultiAxisChart<X, Y> {
 	// -------------- PRIVATE FIELDS ------------------------------------------
 
 	/**
-	 * A multiplier for teh Y values that we store for each series, it is used to
+	 * A multiplier for the Y values that we store for each series, it is used to
 	 * animate in a new series
 	 */
 	private Map<MultiAxisChart.Series<X, Y>, DoubleProperty> seriesYMultiplierMap = new HashMap<>();
@@ -79,14 +80,17 @@ public class MultiAxisAreaChart<X, Y> extends MultiAxisChart<X, Y> {
 			requestChartLayout();
 		}
 
+		@Override
 		public Object getBean() {
 			return this;
 		}
 
+		@Override
 		public String getName() {
 			return "createSymbols";
 		}
 
+		@Override
 		public CssMetaData<MultiAxisAreaChart<?, ?>, Boolean> getCssMetaData() {
 			return null;
 		}
@@ -113,12 +117,15 @@ public class MultiAxisAreaChart<X, Y> extends MultiAxisChart<X, Y> {
 	// -------------- CONSTRUCTORS ----------------------------------------------
 
 	/**
-	 * Construct a new Area Chart with the given axis
+	 * Construct a new MultiAxisAreaChart with the given axis
 	 *
 	 * @param xAxis
 	 *            The x axis to use
-	 * @param yAxis
-	 *            The y axis to use
+	 * @param y1Axis
+	 *            The y1 axis to use
+	 * @param y2Axis
+	 *            The y2 axis to use
+	 *
 	 */
 	public MultiAxisAreaChart(Axis<X> xAxis, Axis<Y> y1Axis, Axis<Y> y2Axis) {
 		this(xAxis, y1Axis, y2Axis, FXCollections.<MultiAxisChart.Series<X, Y>>observableArrayList());

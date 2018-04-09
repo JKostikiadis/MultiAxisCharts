@@ -23,40 +23,35 @@
  *
  */
 
-package javafx.scene.chart;
+package com.kostikiadis.charts;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import javafx.scene.AccessibleRole;
+import com.sun.javafx.charts.Legend;
+import com.sun.javafx.charts.Legend.LegendItem;
+
 import javafx.animation.Animation;
-import javafx.animation.FadeTransition;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.NamedArg;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.value.WritableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Orientation;
-import javafx.scene.Node;
-import javafx.scene.layout.StackPane;
-import javafx.util.Duration;
-
-import com.sun.javafx.charts.Legend;
-import com.sun.javafx.charts.Legend.LegendItem;
-
-import javafx.css.StyleableDoubleProperty;
 import javafx.css.CssMetaData;
 import javafx.css.PseudoClass;
-
-import com.sun.javafx.css.converters.SizeConverter;
-
 import javafx.css.Styleable;
-import javafx.css.StyleableProperty;
+import javafx.css.StyleableDoubleProperty;
+import javafx.geometry.Orientation;
+import javafx.scene.AccessibleRole;
+import javafx.scene.Node;
+import javafx.scene.chart.Axis;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.ValueAxis;
+import javafx.scene.layout.StackPane;
 
 /**
  * A chart that plots bars indicating data values for a category. The bars can
@@ -89,14 +84,17 @@ public class MultiAxisBarChart<X, Y> extends MultiAxisChart<X, Y> {
 			layout();
 		}
 
+		@Override
 		public Object getBean() {
 			return MultiAxisBarChart.this;
 		}
 
+		@Override
 		public String getName() {
 			return "barGap";
 		}
 
+		@Override
 		public CssMetaData<MultiAxisBarChart<?, ?>, Number> getCssMetaData() {
 			return null;
 		}
@@ -132,6 +130,7 @@ public class MultiAxisBarChart<X, Y> extends MultiAxisChart<X, Y> {
 			return "categoryGap";
 		}
 
+		@Override
 		public CssMetaData<MultiAxisBarChart<?, ?>, Number> getCssMetaData() {
 			return null;
 		}
@@ -153,13 +152,16 @@ public class MultiAxisBarChart<X, Y> extends MultiAxisChart<X, Y> {
 
 	/**
 	 * Construct a new MultiAxisBarChart with the given axis. The two axis should be
-	 * a ValueAxis/NumberAxis and a CategoryAxis, they can be in either order
-	 * depending on if you want a horizontal or vertical bar chart.
+	 * a ValueAxis/NumberAxis (Y1, Y2) and a CategoryAxis ( X-Axis), they can be in
+	 * either order depending on if you want a horizontal or vertical bar chart.
 	 *
 	 * @param xAxis
 	 *            The x axis to use
-	 * @param yAxis
-	 *            The y axis to use
+	 * @param y1Axis
+	 *            The y1 axis to use
+	 * @param y2Axis
+	 *            The y2 axis to use
+	 *
 	 */
 	public MultiAxisBarChart(Axis<X> xAxis, Axis<Y> y1Axis, Axis<Y> y2Axis) {
 		this(xAxis, y1Axis, y2Axis, FXCollections.<Series<X, Y>>observableArrayList());
@@ -250,9 +252,9 @@ public class MultiAxisBarChart<X, Y> extends MultiAxisChart<X, Y> {
 		}
 		categoryMap.put(category, item);
 		Node bar = createBar(series, getData().indexOf(series), item, itemIndex);
-		
+
 		getPlotChildren().add(bar);
-		
+
 	}
 
 	@Override
@@ -263,10 +265,9 @@ public class MultiAxisBarChart<X, Y> extends MultiAxisChart<X, Y> {
 			bar.focusTraversableProperty().unbind();
 		}
 
-		
-			processDataRemove(series, item);
-			removeDataItemFromDisplay(series, item);
-		
+		processDataRemove(series, item);
+		removeDataItemFromDisplay(series, item);
+
 	}
 
 	/** @inheritDoc */
@@ -307,15 +308,15 @@ public class MultiAxisBarChart<X, Y> extends MultiAxisChart<X, Y> {
 				category = (String) item.getYValue();
 			}
 			categoryMap.put(category, item);
-			
-				// RT-21164 check if bar value is negative to add NEGATIVE_STYLE style class
-				double barVal = (orientation == Orientation.VERTICAL) ? ((Number) item.getYValue()).doubleValue()
-						: ((Number) item.getXValue()).doubleValue();
-				if (barVal < 0) {
-					bar.getStyleClass().add(NEGATIVE_STYLE);
-				}
-				getPlotChildren().add(bar);
-			
+
+			// RT-21164 check if bar value is negative to add NEGATIVE_STYLE style class
+			double barVal = (orientation == Orientation.VERTICAL) ? ((Number) item.getYValue()).doubleValue()
+					: ((Number) item.getXValue()).doubleValue();
+			if (barVal < 0) {
+				bar.getStyleClass().add(NEGATIVE_STYLE);
+			}
+			getPlotChildren().add(bar);
+
 		}
 		if (categoryMap.size() > 0)
 			seriesCategoryMap.put(series, categoryMap);
@@ -325,14 +326,14 @@ public class MultiAxisBarChart<X, Y> extends MultiAxisChart<X, Y> {
 	protected void seriesRemoved(final Series<X, Y> series) {
 		updateDefaultColorIndex(series);
 		// remove all symbol nodes
-		
-			for (Data<X, Y> d : series.getData()) {
-				final Node bar = d.getNode();
-				getPlotChildren().remove(bar);
-				updateMap(series, d);
-			}
-			removeSeriesFromDisplay(series);
-		
+
+		for (Data<X, Y> d : series.getData()) {
+			final Node bar = d.getNode();
+			getPlotChildren().remove(bar);
+			updateMap(series, d);
+		}
+		removeSeriesFromDisplay(series);
+
 	}
 
 	/** @inheritDoc */

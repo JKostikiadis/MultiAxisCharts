@@ -1,4 +1,4 @@
-package javafx.scene.chart;
+package com.kostikiadis.charts;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -34,6 +34,10 @@ import javafx.css.StyleableBooleanProperty;
 import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.chart.Axis;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.Chart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ClosePath;
@@ -45,7 +49,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 
-@SuppressWarnings("restriction")
 public abstract class MultiAxisChart<X, Y> extends Chart {
 
 	// -------------- PRIVATE FIELDS -------------------------------------
@@ -240,10 +243,12 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 			old = current;
 		}
 
+		@Override
 		public Object getBean() {
 			return MultiAxisChart.this;
 		}
 
+		@Override
 		public String getName() {
 			return "data";
 		}
@@ -1608,6 +1613,7 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 		 * data item.
 		 */
 		private ObjectProperty<Node> node = new SimpleObjectProperty<Node>(this, "node") {
+			@Override
 			protected void invalidated() {
 				Node node = get();
 				if (node != null) {

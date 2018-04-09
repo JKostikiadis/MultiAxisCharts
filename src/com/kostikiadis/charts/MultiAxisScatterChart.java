@@ -1,23 +1,18 @@
-package javafx.scene.chart;
+package com.kostikiadis.charts;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.sun.javafx.charts.Legend;
 import com.sun.javafx.charts.Legend.LegendItem;
 
-import javafx.animation.FadeTransition;
-import javafx.animation.ParallelTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.AccessibleRole;
 import javafx.scene.Node;
+import javafx.scene.chart.Axis;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Line;
-import javafx.util.Duration;
 
-@SuppressWarnings("restriction")
 public class MultiAxisScatterChart<X, Y> extends MultiAxisChart<X, Y> {
 
 	// -------------- PRIVATE FIELDS ------------------------------------------
@@ -30,8 +25,11 @@ public class MultiAxisScatterChart<X, Y> extends MultiAxisChart<X, Y> {
 	 *
 	 * @param xAxis
 	 *            The x axis to use
-	 * @param yAxis
-	 *            The y axis to use
+	 * @param y1Axis
+	 *            The y1 axis to use
+	 * @param y2Axis
+	 *            The y2 axis to use
+	 *
 	 */
 
 	public MultiAxisScatterChart(Axis<X> xAxis, Axis<Y> y1Axis, Axis<Y> y2Axis) {
@@ -57,7 +55,6 @@ public class MultiAxisScatterChart<X, Y> extends MultiAxisChart<X, Y> {
 
 	// -------------- METHODS ----------------------------------------------
 
-
 	/** @inheritDoc */
 	@Override
 	protected void dataItemAdded(MultiAxisChart.Series<X, Y> series, int itemIndex, Data<X, Y> item) {
@@ -73,9 +70,8 @@ public class MultiAxisScatterChart<X, Y> extends MultiAxisChart<X, Y> {
 		// set symbol styles
 		symbol.getStyleClass().setAll("chart-symbol", "series" + getData().indexOf(series), "data" + itemIndex,
 				series.defaultColorStyleClass);
-		
+
 		getPlotChildren().add(symbol);
-		
 
 	}
 
@@ -88,10 +84,9 @@ public class MultiAxisScatterChart<X, Y> extends MultiAxisChart<X, Y> {
 			symbol.focusTraversableProperty().unbind();
 		}
 
-		
-			getPlotChildren().remove(symbol);
-			removeDataItemFromDisplay(series, item);
-		
+		getPlotChildren().remove(symbol);
+		removeDataItemFromDisplay(series, item);
+
 	}
 
 	/** @inheritDoc */
@@ -112,13 +107,13 @@ public class MultiAxisScatterChart<X, Y> extends MultiAxisChart<X, Y> {
 	@Override
 	protected void seriesRemoved(final MultiAxisChart.Series<X, Y> series) {
 		// remove all symbol nodes
-		
-			for (final Data<X, Y> d : series.getData()) {
-				final Node symbol = d.getNode();
-				getPlotChildren().remove(symbol);
-			}
-			removeSeriesFromDisplay(series);
-		
+
+		for (final Data<X, Y> d : series.getData()) {
+			final Node symbol = d.getNode();
+			getPlotChildren().remove(symbol);
+		}
+		removeSeriesFromDisplay(series);
+
 	}
 
 	/** @inheritDoc */
@@ -157,8 +152,6 @@ public class MultiAxisScatterChart<X, Y> extends MultiAxisChart<X, Y> {
 				}
 			}
 		}
-
-	
 
 	}
 

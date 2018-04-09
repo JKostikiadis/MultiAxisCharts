@@ -1,4 +1,4 @@
-package javafx.scene.chart;
+package com.kostikiadis.charts;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +29,7 @@ import javafx.css.Styleable;
 import javafx.css.StyleableBooleanProperty;
 import javafx.scene.AccessibleRole;
 import javafx.scene.Node;
+import javafx.scene.chart.Axis;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
@@ -87,14 +88,17 @@ public class MultiAxisLineChart<X, Y> extends MultiAxisChart<X, Y> {
 			requestChartLayout();
 		}
 
+		@Override
 		public Object getBean() {
 			return MultiAxisLineChart.this;
 		}
 
+		@Override
 		public String getName() {
 			return "createSymbols";
 		}
 
+		@Override
 		public CssMetaData<MultiAxisLineChart<?, ?>, Boolean> getCssMetaData() {
 			return null;
 		}
@@ -134,10 +138,12 @@ public class MultiAxisLineChart<X, Y> extends MultiAxisChart<X, Y> {
 			requestChartLayout();
 		}
 
+		@Override
 		public Object getBean() {
 			return MultiAxisLineChart.this;
 		}
 
+		@Override
 		public String getName() {
 			return "axisSortingPolicy";
 		}
@@ -163,8 +169,11 @@ public class MultiAxisLineChart<X, Y> extends MultiAxisChart<X, Y> {
 	 *
 	 * @param xAxis
 	 *            The x axis to use
-	 * @param yAxis
-	 *            The y axis to use
+	 * @param y1Axis
+	 *            The y1 axis to use
+	 * @param y2Axis
+	 *            The y2 axis to use
+	 *
 	 */
 	public MultiAxisLineChart(Axis<X> xAxis, Axis<Y> y1Axis, Axis<Y> y2Axis) {
 		this(xAxis, y1Axis, y2Axis, FXCollections.<Series<X, Y>>observableArrayList());
@@ -297,7 +306,6 @@ public class MultiAxisLineChart<X, Y> extends MultiAxisChart<X, Y> {
 		seriesYAnimMultiplier.setValue(1d);
 
 		getPlotChildren().add(seriesLine);
-
 
 		for (int j = 0; j < series.getData().size(); j++) {
 			Data<X, Y> item = series.getData().get(j);
