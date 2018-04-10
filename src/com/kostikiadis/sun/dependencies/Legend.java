@@ -1,30 +1,5 @@
 package com.kostikiadis.sun.dependencies;
 
-/*
- * Copyright (c) 2010, 2013, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
- *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
- *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
- */
-
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.BooleanPropertyBase;
 import javafx.beans.property.ObjectProperty;
@@ -41,15 +16,12 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 
-/**
- * A chart legend that displays a list of items with symbols in a box
- */
+
 public class Legend extends Region {
 
 	private static final int GAP = 5;
 
-	// -------------- PRIVATE FIELDS ------------------------------------------
-
+	
 	private int rows = 0, columns = 0;
 	private ListChangeListener<LegendItem> itemsListener = new ListChangeListener<LegendItem>() {
 		@Override
@@ -62,11 +34,7 @@ public class Legend extends Region {
 		}
 	};
 
-	// -------------- PUBLIC PROPERTIES ----------------------------------------
-	/**
-	 * The legend items should be laid out vertically in columns rather than
-	 * horizontally in rows
-	 */
+	
 	private BooleanProperty vertical = new BooleanPropertyBase(false) {
 		@Override
 		protected void invalidated() {
@@ -96,7 +64,6 @@ public class Legend extends Region {
 		return vertical;
 	}
 
-	/** The legend items to display in this legend */
 	private ObjectProperty<ObservableList<LegendItem>> items = new ObjectPropertyBase<ObservableList<LegendItem>>() {
 		ObservableList<LegendItem> oldItems = null;
 
@@ -138,17 +105,12 @@ public class Legend extends Region {
 		return items;
 	}
 
-	// -------------- PROTECTED PROPERTIES ------------------------------------
-
-	// -------------- CONSTRUCTORS ----------------------------------------------
-
 	public Legend() {
 		setItems(FXCollections.<LegendItem>observableArrayList());
 		getStyleClass().setAll("chart-legend");
 	}
 
-	// -------------- METHODS ---------------------------------------------------
-
+	
 	private Dimension2D getTileSize() {
 		double maxWidth = 0;
 		double maxHeight = 0;
@@ -162,7 +124,7 @@ public class Legend extends Region {
 	@Override
 	protected double computePrefWidth(double height) {
 		if (getItems().isEmpty())
-			return 0; // RT-31157 : no data - dont show legend
+			return 0; 
 		final double contentHeight = height - snappedTopInset() - snappedBottomInset();
 		Dimension2D tileSize = getTileSize();
 		if (height == -1) {
@@ -180,7 +142,7 @@ public class Legend extends Region {
 	@Override
 	protected double computePrefHeight(double width) {
 		if (getItems().isEmpty())
-			return 0; // RT-31157 : no data - dont show legend
+			return 0; 
 		final double contentWidth = width - snappedLeftInset() - snappedRightInset();
 		Dimension2D tileSize = getTileSize();
 		if (width == -1) {
@@ -229,13 +191,10 @@ public class Legend extends Region {
 		}
 	}
 
-	/** A item to be displayed on a Legend */
 	public static class LegendItem {
 
-		/** Label used to represent the legend item */
 		private Label label = new Label();
 
-		/** The item text */
 		private StringProperty text = new StringPropertyBase() {
 			@Override
 			protected void invalidated() {
@@ -265,11 +224,6 @@ public class Legend extends Region {
 			return text;
 		}
 
-		/**
-		 * The symbol to use next to the item text, set to null for no symbol. The
-		 * default is a simple square of symbolFill
-		 */
-		// new Rectangle(8,8,null)
 		private ObjectProperty<Node> symbol = new ObjectPropertyBase<Node>(new Region()) {
 			@Override
 			protected void invalidated() {
