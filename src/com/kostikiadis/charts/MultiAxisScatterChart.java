@@ -2,8 +2,8 @@ package com.kostikiadis.charts;
 
 import java.util.Iterator;
 
-import com.sun.javafx.charts.Legend;
-import com.sun.javafx.charts.Legend.LegendItem;
+import com.kostikiadis.sun.dependencies.Legend;
+import com.kostikiadis.sun.dependencies.Legend.LegendItem;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

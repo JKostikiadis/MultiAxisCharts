@@ -30,8 +30,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.sun.javafx.charts.Legend;
-import com.sun.javafx.charts.Legend.LegendItem;
+import com.kostikiadis.sun.dependencies.Legend;
+import com.kostikiadis.sun.dependencies.Legend.LegendItem;
 
 import javafx.animation.Animation;
 import javafx.animation.ParallelTransition;

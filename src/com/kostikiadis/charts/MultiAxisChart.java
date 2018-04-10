@@ -12,7 +12,7 @@ import java.util.Set;
 
 import com.kostikiadis.regression.PolynomialFitter;
 import com.kostikiadis.regression.PolynomialFitter.Polynomial;
-import com.sun.javafx.collections.NonIterableChange;
+import com.kostikiadis.sun.dependencies.NonIterableChange;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
