@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.kostikiadis.regression.PolynomialFitter;
-import com.kostikiadis.regression.PolynomialFitter.Polynomial;
+import com.kostikiadis.regression.PolynomialList;
+import com.kostikiadis.regression.PolynomialRegression;
 import com.sun.javafx.collections.NonIterableChange;
 
 import javafx.animation.KeyFrame;
@@ -1146,7 +1146,7 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 
 		ArrayList<Point> regressionPoints = new ArrayList<>();
 
-		PolynomialFitter quadraticPolyFilter = new PolynomialFitter(polyDegree);
+		PolynomialRegression quadraticPolyFilter = new PolynomialRegression(polyDegree);
 
 		double index = 0;
 		for (Iterator<Data<X, Y>> it = getDisplayedDataIterator(s); it.hasNext();) {
@@ -1183,7 +1183,7 @@ public abstract class MultiAxisChart<X, Y> extends Chart {
 			}
 		}
 
-		Polynomial polynomial = quadraticPolyFilter.getBestFit();
+		PolynomialList polynomial = quadraticPolyFilter.getPolynomial();
 
 		if (regressionPoints.size() < 2) {
 			return null;
